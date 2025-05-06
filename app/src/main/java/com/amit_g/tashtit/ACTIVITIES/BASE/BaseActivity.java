@@ -101,7 +101,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void navigateToActivity(Class<?> activityClass) {
+    protected void navigateToActivity(Class<?> activityClass) {
         // Check if we're not already in the target activity
         if (activityClass == null){
             Toast.makeText(this, "Not implemented", Toast.LENGTH_SHORT).show();

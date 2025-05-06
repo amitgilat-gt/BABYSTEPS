@@ -15,7 +15,6 @@
         android:layout_height="127dp"
         android:layout_marginTop="64dp"
         android:contentDescription="App Logo"
-        android:src="@drawable/Icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

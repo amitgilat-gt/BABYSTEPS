@@ -1,8 +1,11 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
@@ -21,6 +24,8 @@ public class HomeActivity extends BaseActivity {
 
     private RecyclerView buttonRecyclerView;
     private NevigationAdapter adapter;
+    private SharedPreferences sharedPreferences;
+    private TextView welcomeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +45,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void initializeViews() {
         buttonRecyclerView = findViewById(R.id.buttonRecyclerView);
+        welcomeText = findViewById(R.id.welcomeText);
 
         btnNevigations navList = new btnNevigations();
         navList.add(new btnNevigation("Growth", GrowthActivity.class));
@@ -47,7 +53,10 @@ public class HomeActivity extends BaseActivity {
         navList.add(new btnNevigation("User", UserActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
         navList.add(new btnNevigation("Last Activities", ActivitiesActivity.class));
-
+        sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        String userId = sharedPreferences.getString("userId", null);
+        String username = sharedPreferences.getString("username", null);
+        welcomeText.setText("Hi, " + username);
         setRecyclerView(navList);
     }
 

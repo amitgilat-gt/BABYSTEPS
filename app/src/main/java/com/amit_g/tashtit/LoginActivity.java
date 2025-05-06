@@ -1,9 +1,13 @@
 package com.amit_g.tashtit;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +16,9 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.amit_g.model.User;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
+import com.amit_g.tashtit.ACTIVITIES.HomeActivity;
 import com.amit_g.viewmodel.UsersViewModel;
 
 public class LoginActivity extends BaseActivity {
@@ -33,6 +39,8 @@ public class LoginActivity extends BaseActivity {
             return insets;
         });
         initializeViews();
+        setViewModel();
+        setListeners();
     }
 
     @Override
@@ -45,8 +53,39 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void setListeners() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = etEmail.getText().toString();
+                String password = etPassword.getText().toString();
+                viewModel.loginUser(username, password)
+                        .addOnSuccessListener(querySnapshot -> {
+                            if (!querySnapshot.isEmpty()) {
+                                User user = querySnapshot.getDocuments().get(0).toObject(User.class);
+                                saveUserToPreferences(user);
+                                navigateToActivity(HomeActivity.class);
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(e -> {
+                            // ⚠️ Handle error
+                        });
 
+            }
+        });
     }
+    private void saveUserToPreferences(User user) {
+        SharedPreferences sharedPref = getApplicationContext()
+                .getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("userIdFs", user.getIdFs());
+        editor.putString("username", user.getUserName());
+        editor.putString("email", user.getEmail()); // if needed
+        // Add other fields as needed
+        editor.apply();
+    }
+
 
     @Override
     protected void setViewModel() {
