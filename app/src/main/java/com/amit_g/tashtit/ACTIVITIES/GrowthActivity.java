@@ -1,0 +1,92 @@
+package com.amit_g.tashtit.ACTIVITIES;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.amit_g.helper.DateUtil;
+import com.amit_g.helper.inputValidators.DateRule;
+import com.amit_g.helper.inputValidators.EntryValidation;
+import com.amit_g.helper.inputValidators.Rule;
+import com.amit_g.helper.inputValidators.RuleOperation;
+import com.amit_g.helper.inputValidators.TextRule;
+import com.amit_g.helper.inputValidators.Validator;
+import com.amit_g.model.Progress;
+import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
+import com.amit_g.tashtit.R;
+import com.amit_g.viewmodel.ProgressViewModel;
+
+import java.time.LocalDate;
+
+public class GrowthActivity extends BaseActivity implements EntryValidation {
+    private EditText etHeight;
+    private EditText etWeight;
+    private EditText etDate;
+    private Button btnPut;
+    private Button btnCancelSt;
+    private ProgressViewModel viewModel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_growth);
+        initializeViews();
+        setValidation();
+        setListeners();
+        setViewModel();
+    }
+
+    @Override
+    protected void initializeViews() {
+        etHeight = findViewById(R.id.etHeight);
+        etWeight = findViewById(R.id.etWeight);
+        etDate = findViewById(R.id.etDate);
+        btnPut = findViewById(R.id.btnPut);
+        btnCancelSt = findViewById(R.id.btnCancelSt);
+    }
+
+    @Override
+    protected void setListeners() {
+        btnPut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validate()) {
+                    Progress progress = new Progress();
+                    progress.setHeight(Double.parseDouble(etHeight.getText().toString()));
+                    progress.setWeight(Double.parseDouble(etWeight.getText().toString()));
+                    progress.setDate(DateUtil.stringDateToLong(etDate.getText().toString()));
+                    viewModel.add(progress);
+                    Toast.makeText(GrowthActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void setViewModel() {
+        viewModel = new ViewModelProvider(this).get(ProgressViewModel.class);
+    }
+
+    @Override
+    public void setValidation() {
+        // Validate height and weight as decimal numbers
+        Validator.add(new TextRule(etHeight, RuleOperation.REQUIRED, "Height is required"));
+
+        Validator.add(new TextRule(etWeight, RuleOperation.REQUIRED, "Weight is required"));
+
+        // Validate date as a date
+        Validator.add(new TextRule(etDate, RuleOperation.REQUIRED, "Date is required"));
+    }
+
+
+    @Override
+    public boolean validate() {
+        return Validator.validate();
+    }
+}

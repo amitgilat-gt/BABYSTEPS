@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "197512081081",
+    "project_id": "babysteps-dfb4c",
+    "storage_bucket": "babysteps-dfb4c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:197512081081:android:75281edbf3816d424ff568",
+        "android_client_info": {
+          "package_name": "com.amit_g.tashtit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJePWqMxZGDk3AY8I_hWluw4gG0EqWeRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
