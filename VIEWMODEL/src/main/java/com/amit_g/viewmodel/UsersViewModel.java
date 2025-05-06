@@ -20,4 +20,7 @@ public class UsersViewModel extends BaseViewModel<User, Users> {
         repository = new UsersRepository(application);
         return repository;
     }
+    public void login(String email, String password) {
+        repository.login(email, password);
+    }
 }

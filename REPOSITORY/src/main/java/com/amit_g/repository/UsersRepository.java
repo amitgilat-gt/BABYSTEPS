@@ -1,7 +1,6 @@
 package com.amit_g.repository;
 
 import android.app.Application;
-import android.content.Context;
 
 import com.amit_g.model.User;
 import com.amit_g.model.Users;
@@ -14,8 +13,16 @@ public class UsersRepository extends BaseRepository<User, Users> {
         super(User.class, Users.class, application);
     }
 
+    // For sign-up: check if user already exists by username
     @Override
     protected Query getQueryForExist(User entity) {
-        return getCollection().whereEqualTo("username",entity.getUserName());
+        return getCollection().whereEqualTo("username", entity.getUserName());
+    }
+
+    // For login: check if username and password match
+    public Query getQueryForLogin(String username, String password) {
+        return getCollection()
+                .whereEqualTo("username", username)
+                .whereEqualTo("password", password);
     }
 }
