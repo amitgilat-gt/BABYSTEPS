@@ -1,4 +1,4 @@
-package com.amit_g.tashtit;
+package com.amit_g.tashtit.ACTIVITIES;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.amit_g.model.User;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
-import com.amit_g.tashtit.ACTIVITIES.HomeActivity;
+import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.UsersViewModel;
 
 public class LoginActivity extends BaseActivity {
@@ -72,6 +71,12 @@ public class LoginActivity extends BaseActivity {
                             // ⚠️ Handle error
                         });
 
+            }
+        });
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigateToActivity(UserActivity.class);
             }
         });
     }

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#D4E6F1"
-    tools:context=".LoginActivity">
+    tools:context=".ACTIVITIES.LoginActivity">
 
     <!-- App Logo (Updated to be circular) -->
     <androidx.cardview.widget.CardView
