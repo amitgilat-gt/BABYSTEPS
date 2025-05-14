@@ -73,9 +73,7 @@ public class HomeActivity extends BaseActivity {
         });
 
         buttonRecyclerView.setAdapter(adapter);
-        buttonRecyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        );
+        buttonRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     @Override
