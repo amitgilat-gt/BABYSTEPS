@@ -1,5 +1,6 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +22,9 @@ import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.ProgressViewModel;
 
+import java.text.Format;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class GrowthActivity extends BaseActivity implements EntryValidation {
     private EditText etHeight;
@@ -47,6 +50,11 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         etHeight = findViewById(R.id.etHeight);
         etWeight = findViewById(R.id.etWeight);
         etDate = findViewById(R.id.etDate);
+        DateTimeFormatter formatter = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            etDate.setText(LocalDate.now().format(formatter));
+        }
         btnPut = findViewById(R.id.btnPut);
         btnCancelSt = findViewById(R.id.btnCancelSt);
     }
