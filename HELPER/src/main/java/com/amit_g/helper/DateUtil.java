@@ -8,6 +8,7 @@ import com.google.android.material.datepicker.CompositeDateValidator;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.DateValidatorPointForward;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ import java.time.format.FormatStyle;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class DateUtil {
 
@@ -122,6 +124,11 @@ public class DateUtil {
         }
         else
             return null;
+    }
+    public static String formatDate(long timestamp) {
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
+        Date date = new Date(timestamp);
+        return sdf.format(date);
     }
 
     public static boolean inRange(LocalDate dateToCheck, LocalDate startRange, LocalDate endRange){

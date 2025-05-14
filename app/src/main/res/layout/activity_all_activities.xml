@@ -60,7 +60,7 @@
 
     <!-- Activities RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activitiesRecyclerView"
+        android:id="@+id/rvActivities"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -76,7 +76,7 @@
 
     <!-- Floating Action Button for adding new activities -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addActivityFab"
+        android:id="@+id/fabAddActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"

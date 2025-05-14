@@ -52,7 +52,7 @@ public class HomeActivity extends BaseActivity {
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("User", UserActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
-        navList.add(new btnNevigation("Last Activities", ActivitiesActivity.class));
+        navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         String userId = sharedPreferences.getString("userId", null);
         String username = sharedPreferences.getString("username", null);
