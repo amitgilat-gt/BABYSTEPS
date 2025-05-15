@@ -113,13 +113,7 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
                     baby.setGender(gender);
 
 
-                    // Save the baby data using the ViewModel
                     viewModel.save(baby);
-
-                    UserBaby relation = new UserBaby(userId,baby.getIdFs());
-                    userBabyViewModel.add(relation);
-                    Toast.makeText(ActivityBabySign.this, "Baby added successfully", Toast.LENGTH_SHORT).show();
-                    finish();
                 }
             }
         });
@@ -130,7 +124,16 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
         viewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
         userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
 
+        viewModel.getSavedBabyLiveData().observe(this, savedBaby -> {
+            if (savedBaby != null) {
+                UserBaby relation = new UserBaby(userId, savedBaby.getIdFs());
+                userBabyViewModel.add(relation);
+                Toast.makeText(this, "Baby and relation saved", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
+
 
     @Override
     public void setValidation() {

@@ -5,6 +5,7 @@ import android.app.Application;
 import com.amit_g.model.Babies;
 import com.amit_g.model.Baby;
 import com.amit_g.repository.BASE.BaseRepository;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class BabiesRepository extends BaseRepository<Baby, Babies> {
