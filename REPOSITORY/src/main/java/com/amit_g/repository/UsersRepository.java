@@ -18,7 +18,7 @@ public class UsersRepository extends BaseRepository<User, Users> {
     // For sign-up: check if user already exists by username
     @Override
     protected Query getQueryForExist(User entity) {
-        return getCollection().whereEqualTo("username", entity.getUserName());
+        return getCollection().whereEqualTo("email", entity.getEmail());
     }
 
     // For login: check if username and password match

@@ -1,8 +1,10 @@
 package com.amit_g.model;
 
+import com.amit_g.model.BASE.BaseEntity;
+
 import java.util.Objects;
 
-public class UserBaby {
+public class UserBaby extends BaseEntity {
     private String userId;
     private String babyId;
 

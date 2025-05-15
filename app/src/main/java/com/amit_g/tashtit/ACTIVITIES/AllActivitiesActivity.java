@@ -2,6 +2,7 @@ package com.amit_g.tashtit.ACTIVITIES;
 
 import static com.amit_g.helper.DateUtil.longDateToString;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class AllActivitiesActivity extends BaseActivity {
 
     }
 
+    @SuppressLint("NewApi")
     private void setRecyclerView() {
         adapter = new ActivitiesAdapter(null, R.layout.single_activity_layout, holder -> {
             holder.putView("title", holder.itemView.findViewById(R.id.activityTypeText));
@@ -60,8 +62,8 @@ public class AllActivitiesActivity extends BaseActivity {
             ((TextView) holder.getView("title")).setText(item.getAction().toString());
             ((TextView) holder.getView("description")).setText(item.getDetails());
             ((TextView) holder.getView("date")).setText(DateUtil.formatDate(item.getDate()));
-            LocalTime time = item.getTime();
-            ((TextView) holder.getView("time")).setText(time != null ? time.toString() : "");
+//            LocalTime time = item.getTime();
+//            ((TextView) holder.getView("time")).setText(time != null ?time.toString()  : "");
         });
         rvActivities.setAdapter(adapter);
         rvActivities.setLayoutManager(new LinearLayoutManager(this));
