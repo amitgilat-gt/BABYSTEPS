@@ -70,16 +70,12 @@ public class UserActivity extends BaseActivity implements EntryValidation {
                     user.setIdFs(oldUser.getIdFs());
                 }
 
-                String username = etEmail.getText().toString();
-                String password = etPassword.getText().toString();
-
                 viewModel.save(user);
-                User loggedInUser = user;
-                saveUserToPreferences(loggedInUser);
-                navigateToActivity(HomeActivity.class);
-
+                saveUserToPreferences(user);
+                navigateToActivity(LoginActivity.class);
             }
         });
+
 
         tvLogin.setOnClickListener(v -> navigateToActivity(LoginActivity.class));
     }
@@ -93,12 +89,11 @@ public class UserActivity extends BaseActivity implements EntryValidation {
         SharedPreferences sharedPref = getApplicationContext()
                 .getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("userIdFs", user.getIdFs());
-        editor.putString("username", user.getUserName());
         editor.putString("email", user.getEmail());
-        // Add more fields if necessary
+        editor.putString("password", user.getPassword());
         editor.apply();
     }
+
 
     @Override
     public void setValidation() {

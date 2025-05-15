@@ -1,5 +1,7 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -22,9 +24,11 @@ import com.amit_g.helper.inputValidators.TextRule;
 import com.amit_g.helper.inputValidators.Validator;
 import com.amit_g.model.Baby;
 import com.amit_g.model.Gender;
+import com.amit_g.model.UserBaby;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.BabiesViewModel;
+import com.amit_g.viewmodel.UserBabyViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalDate;
@@ -40,6 +44,9 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
     private BabiesViewModel viewModel;
     private Baby baby;
     private Spinner spGender;
+    private UserBabyViewModel userBabyViewModel;
+    private SharedPreferences sharedPreferences;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +74,7 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genderList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spGender.setAdapter(adapter);  // Now spGender is properly initialized
+        spGender.setAdapter(adapter); // Now spGender is properly initialized
     }
 
     @Override
@@ -77,7 +84,8 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
         fabPicture = findViewById(R.id.fabAddPhoto);
         imgBabyProfile = findViewById(R.id.imgBabyId);
         btnSignBaby = findViewById(R.id.btnSignUp);
-
+        sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+        userId = sharedPreferences.getString("userIdFs", null);
         // Ensure spGender is initialized here
         spGender = findViewById(R.id.spGender);
         setListeners();  // After all views are initialized, set listeners
@@ -104,8 +112,14 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
                     Gender gender = Gender.valueOf(selectedGender.toUpperCase());
                     baby.setGender(gender);
 
+
                     // Save the baby data using the ViewModel
                     viewModel.save(baby);
+
+                    UserBaby relation = new UserBaby(userId,baby.getIdFs());
+                    userBabyViewModel.add(relation);
+                    Toast.makeText(ActivityBabySign.this, "Baby added successfully", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
@@ -114,6 +128,8 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
+        userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
+
     }
 
     @Override

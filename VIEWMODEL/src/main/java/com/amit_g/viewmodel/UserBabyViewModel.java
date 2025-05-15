@@ -5,6 +5,7 @@ import android.app.Application;
 import com.amit_g.model.UserBaby;
 import com.amit_g.model.UsersBabies;
 import com.amit_g.repository.BASE.BaseRepository;
+import com.amit_g.repository.UserBabyRepository;
 import com.amit_g.viewmodel.BASE.BaseViewModel;
 
 public class UserBabyViewModel extends BaseViewModel<UserBaby, UsersBabies> {
@@ -14,6 +15,6 @@ public class UserBabyViewModel extends BaseViewModel<UserBaby, UsersBabies> {
 
     @Override
     protected BaseRepository<UserBaby, UsersBabies> createRepository(Application application) {
-        return null;
+        return new UserBabyRepository(application);
     }
 }
