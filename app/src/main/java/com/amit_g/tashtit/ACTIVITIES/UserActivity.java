@@ -3,12 +3,10 @@ package com.amit_g.tashtit.ACTIVITIES;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.lifecycle.ViewModelProvider;
@@ -50,7 +48,7 @@ public class UserActivity extends BaseActivity implements EntryValidation {
     protected void initializeViews() {
         etUserName = findViewById(R.id.etUserName);
         etEmail = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
+        etPassword = findViewById(R.id.etPasswordB);
         cbNotification = findViewById(R.id.cbNotification);
         btnSignUp = findViewById(R.id.btnSignUp);
         tvLogin = findViewById(R.id.tvLogin);

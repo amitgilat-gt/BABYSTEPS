@@ -3,8 +3,10 @@ package com.amit_g.tashtit.ACTIVITIES;
 import static com.amit_g.helper.DateUtil.longDateToString;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -19,8 +21,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amit_g.helper.DateUtil;
 import com.amit_g.model.Galleries;
 import com.amit_g.model.LastActivities;
+import com.amit_g.model.btnNevigation;
+import com.amit_g.model.btnNevigations;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.ADPTERS.ActivitiesAdapter;
+import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.ActivityViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,6 +38,8 @@ public class AllActivitiesActivity extends BaseActivity {
     private FloatingActionButton fabAddActivity;
     private ActivityViewModel viewModel;
     private ActivitiesAdapter adapter;
+    private RecyclerView menuRecyclerView;
+    private NevigationAdapter menuAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +87,16 @@ public class AllActivitiesActivity extends BaseActivity {
     protected void initializeViews() {
         rvActivities = findViewById(R.id.rvActivities);
         fabAddActivity = findViewById(R.id.fabAddActivity);
+        menuRecyclerView = findViewById(R.id.menuRecyclerView);
+        btnNevigations navList = new btnNevigations();
+
+        navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
+        navList.add(new btnNevigation("Home", HomeActivity.class));
+        navList.add(new btnNevigation("Growth", GrowthActivity.class));
+        navList.add(new btnNevigation("Gallery", GalleryActivity.class));
+        navList.add(new btnNevigation("User", UserActivity.class));
+        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
+        setRecyclerView2(navList);
     }
 
     @Override
@@ -90,6 +107,21 @@ public class AllActivitiesActivity extends BaseActivity {
                 navigateToActivity(ActivitiesActivity.class);
             }
         });
+    }
+    protected void setRecyclerView2(btnNevigations navList) {
+        menuAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
+            holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
+        }, (holder, item, position) -> {
+            Button button = (Button) holder.getView("btnNev");
+            button.setText(item.getLabel());
+
+            button.setOnClickListener(v -> {
+                startActivity(new Intent(AllActivitiesActivity.this, item.getTargetActivity()));
+            });
+        });
+
+        menuRecyclerView.setAdapter(menuAdapter);
+        menuRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     @Override

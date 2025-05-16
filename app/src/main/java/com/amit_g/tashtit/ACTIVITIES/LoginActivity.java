@@ -47,7 +47,7 @@ public class LoginActivity extends BaseActivity {
         btnLogin   = findViewById(R.id.btnLogin);
         tvRegister = findViewById(R.id.tvRegister);
         etEmail    = findViewById(R.id.etEmail);
-        etPassword = findViewById(R.id.etPassword);
+        etPassword = findViewById(R.id.etPasswordB);
     }
 
     @Override
