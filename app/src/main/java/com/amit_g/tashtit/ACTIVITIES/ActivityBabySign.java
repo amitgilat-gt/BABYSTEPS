@@ -120,7 +120,7 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
                         userBaby.setBabyId(baby.getIdFs());
                         userBaby.setUserId(userId);
                         userBabyViewModel.add(userBaby);
-                        new Handler().postDelayed(() -> {hideProgressDialog();finish();}, 1500);
+                        new Handler().postDelayed(() -> {hideProgressDialog();navigateToActivity(HomeActivity.class);}, 1500);
                     }, 1500);
 
                 }

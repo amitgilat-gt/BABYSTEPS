@@ -142,6 +142,12 @@ public class HomeActivity extends BaseActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spBaby.setAdapter(adapter);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setViewModel(); // Refresh baby list every time you return to HomeActivity
+    }
+
 
     private void updateSpinnerWithNoData() {
         List<String> emptyList = Collections.singletonList("No babies connected");
