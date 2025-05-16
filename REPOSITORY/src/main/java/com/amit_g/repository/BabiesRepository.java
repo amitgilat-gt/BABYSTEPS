@@ -6,6 +6,7 @@ import com.amit_g.model.Babies;
 import com.amit_g.model.Baby;
 import com.amit_g.repository.BASE.BaseRepository;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -26,5 +27,8 @@ public class BabiesRepository extends BaseRepository<Baby, Babies> {
                 .whereEqualTo("idB", id)
                 .whereEqualTo("password", password)
                 .get();
+    }
+    public Task<DocumentSnapshot> getBabyById(String babyId) {
+        return getCollection().document(babyId).get();
     }
 }

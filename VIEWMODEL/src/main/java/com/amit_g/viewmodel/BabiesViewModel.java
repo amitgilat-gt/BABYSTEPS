@@ -12,6 +12,7 @@ import com.amit_g.repository.BASE.BaseRepository;
 import com.amit_g.repository.BabiesRepository;
 import com.amit_g.viewmodel.BASE.BaseViewModel;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -30,4 +31,8 @@ public class BabiesViewModel extends BaseViewModel<Baby, Babies> {
     public Task<QuerySnapshot> connectBaby(String id, String password) {
         return repository.connectBaby(id, password);
     }
+    public Task<DocumentSnapshot> getBabyById(String babyId) {
+        return repository.getBabyById(babyId);
+    }
+
 }
