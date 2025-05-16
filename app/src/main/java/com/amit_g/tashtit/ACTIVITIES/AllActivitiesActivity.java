@@ -26,6 +26,7 @@ import com.amit_g.viewmodel.ActivityViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class AllActivitiesActivity extends BaseActivity {
     private RecyclerView rvActivities;
@@ -62,13 +63,18 @@ public class AllActivitiesActivity extends BaseActivity {
             ((TextView) holder.getView("title")).setText(item.getAction().toString());
             ((TextView) holder.getView("description")).setText(item.getDetails());
             ((TextView) holder.getView("date")).setText(DateUtil.formatDate(item.getDate()));
-//            LocalTime time = item.getTime();
-//            ((TextView) holder.getView("time")).setText(time != null ?time.toString()  : "");
+
+            LocalTime time = DateUtil.longToLocalTime(item.getTime());
+            if (time != null) {
+                ((TextView) holder.getView("time")).setText(DateUtil.localTimeToString(time));
+            } else {
+                ((TextView) holder.getView("time")).setText("");
+            }
         });
         rvActivities.setAdapter(adapter);
         rvActivities.setLayoutManager(new LinearLayoutManager(this));
-
     }
+
 
     @Override
     protected void initializeViews() {

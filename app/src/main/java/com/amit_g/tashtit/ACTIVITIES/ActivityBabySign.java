@@ -124,14 +124,14 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
         viewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
         userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
 
-        viewModel.getSavedBabyLiveData().observe(this, savedBaby -> {
-            if (savedBaby != null) {
-                UserBaby relation = new UserBaby(userId, savedBaby.getIdFs());
-                userBabyViewModel.add(relation);
-                Toast.makeText(this, "Baby and relation saved", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+//        viewModel.getSavedBabyLiveData().observe(this, savedBaby -> {
+//            if (savedBaby != null) {
+//                UserBaby relation = new UserBaby(userId, savedBaby.getIdFs());
+//                userBabyViewModel.add(relation);
+//                Toast.makeText(this, "Baby and relation saved", Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+//        });
     }
 
 

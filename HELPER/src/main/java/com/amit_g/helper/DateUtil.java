@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -228,5 +229,21 @@ public class DateUtil {
 
         return constraintsBuilderRange.build();
     }
+    @SuppressLint("NewApi")
+    public static long localTimeToLong(LocalTime time) {
+        return time.toSecondOfDay() * 1000L;
+    }
 
- }
+    @SuppressLint("NewApi")
+    public static LocalTime longToLocalTime(long millis) {
+        return LocalTime.ofSecondOfDay((int)(millis / 1000));
+    }
+
+    @SuppressLint("NewApi")
+    public static String localTimeToString(LocalTime time) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault());
+        return time.format(formatter);
+    }
+
+
+}

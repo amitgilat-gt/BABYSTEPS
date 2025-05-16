@@ -2,7 +2,9 @@ package com.amit_g.tashtit.ACTIVITIES;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -16,6 +18,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.amit_g.helper.DateUtil;
 import com.amit_g.model.Action;
 import com.amit_g.model.LastActivity;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
@@ -38,7 +41,7 @@ public class ActivitiesActivity extends BaseActivity {
     private LastActivity activity;
     private Button btnSelectTime;
     private TextView tvSelectedTime;
-    private LocalTime selectedTime;
+    //private LocalTime selectedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,7 @@ public class ActivitiesActivity extends BaseActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        activity = new LastActivity();
         initializeViews();
         setSpinner();
         setViewModel();
@@ -77,13 +81,20 @@ public class ActivitiesActivity extends BaseActivity {
                 int minute = calendar.get(Calendar.MINUTE);
 
                 // Create and show the TimePickerDialog
-                @SuppressLint({"NewApi", "LocalSuppress"}) TimePickerDialog timePickerDialog = new TimePickerDialog(
+                TimePickerDialog timePickerDialog = new TimePickerDialog(
                         ActivitiesActivity.this,
                         (view, selectedHour, selectedMinute) -> {
                             // Format the selected time as HH:mm and set to TextView
                             String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                             tvSelectedTime.setText(time);
-                            selectedTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
+
+                            // Parse the time string to LocalTime
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                LocalTime selectedTime = LocalTime.of(selectedHour, selectedMinute);
+                                tvSelectedTime.setText(DateUtil.localTimeToString(selectedTime));
+                                activity.setTime(DateUtil.localTimeToLong(selectedTime));
+                            }
+
                         },
                         hour,
                         minute,
@@ -98,14 +109,21 @@ public class ActivitiesActivity extends BaseActivity {
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity = new LastActivity();
                 activity.setDate(System.currentTimeMillis());
                 activity.setDetails(etNote.getText().toString());
                 activity.setAction(Action.valueOf(actionSpinner.getSelectedItem().toString()));
-                activity.setTime(selectedTime);
-                viewModel.save(activity);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getTime() == 0L) {
+                    LocalTime parsedTime = LocalTime.parse(tvSelectedTime.getText().toString(), DateTimeFormatter.ofPattern("HH:mm"));
+                    activity.setTime(DateUtil.localTimeToLong(parsedTime));
+                }
+
+
+                viewModel.add(activity);
+                new Handler().postDelayed(() -> finish(), 1500);
             }
         });
+
         btnCancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

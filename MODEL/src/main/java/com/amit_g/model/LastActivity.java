@@ -9,13 +9,13 @@ public class LastActivity extends BaseEntity {
     private String babyId;
     private long date;
     private Action action;
-    private LocalTime time;
+    private long time;
     private String details;
 
     public LastActivity() {
     }
 
-    public LastActivity(String babyId, long date, LocalTime time, String details) {
+    public LastActivity(String babyId, long date, long time, String details) {
         this.babyId = babyId;
         this.date = date;
         this.time = time;
@@ -46,11 +46,11 @@ public class LastActivity extends BaseEntity {
         this.date = date;
     }
 
-    public LocalTime getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
