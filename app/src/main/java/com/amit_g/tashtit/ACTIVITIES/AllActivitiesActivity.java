@@ -88,7 +88,7 @@ public class AllActivitiesActivity extends BaseActivity {
 
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
         navList.add(new btnNevigation("Home", HomeActivity.class));
-        navList.add(new btnNevigation("Growth", GrowthActivity.class));
+        navList.add(new btnNevigation("Growth", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("User", UserActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));

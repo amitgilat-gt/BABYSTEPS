@@ -69,7 +69,7 @@ public class HomeActivity extends BaseActivity {
         spBaby = findViewById(R.id.spBaby);
 
         btnNevigations navList = new btnNevigations();
-        navList.add(new btnNevigation("Growth", GrowthActivity.class));
+        navList.add(new btnNevigation("Growth", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("User", UserActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
