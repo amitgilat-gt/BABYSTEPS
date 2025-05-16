@@ -1,7 +1,5 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
-import static com.amit_g.helper.DateUtil.longDateToString;
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amit_g.helper.DateUtil;
-import com.amit_g.model.Galleries;
 import com.amit_g.model.LastActivities;
 import com.amit_g.model.btnNevigation;
 import com.amit_g.model.btnNevigations;
@@ -31,7 +28,6 @@ import com.amit_g.viewmodel.ActivityViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class AllActivitiesActivity extends BaseActivity {
     private RecyclerView rvActivities;
@@ -85,8 +81,8 @@ public class AllActivitiesActivity extends BaseActivity {
 
     @Override
     protected void initializeViews() {
-        rvActivities = findViewById(R.id.rvActivities);
-        fabAddActivity = findViewById(R.id.fabAddActivity);
+        rvActivities = findViewById(R.id.rvProgress);
+        fabAddActivity = findViewById(R.id.fabAddProgress);
         menuRecyclerView = findViewById(R.id.menuRecyclerView);
         btnNevigations navList = new btnNevigations();
 
