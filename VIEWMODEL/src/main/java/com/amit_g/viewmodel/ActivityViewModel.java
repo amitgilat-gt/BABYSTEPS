@@ -2,12 +2,19 @@ package com.amit_g.viewmodel;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.amit_g.model.LastActivities;
 import com.amit_g.model.LastActivity;
-import com.amit_g.model.Note;
+import com.amit_g.model.Progress;
 import com.amit_g.repository.BASE.BaseRepository;
 import com.amit_g.repository.ActivitiesRepository;
 import com.amit_g.viewmodel.BASE.BaseViewModel;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActivityViewModel extends BaseViewModel<LastActivity, LastActivities> {
     private ActivitiesRepository repository;
@@ -21,4 +28,21 @@ public class ActivityViewModel extends BaseViewModel<LastActivity, LastActivitie
         repository = new ActivitiesRepository(application);
         return repository;
     }
+    public LiveData<List<LastActivity>> getActivitiesForBabyId(String babyId) {
+        MutableLiveData<List<LastActivity>> liveData = new MutableLiveData<>();
+        repository.getActivitiesForBabyId(babyId).get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<LastActivity> activityList = new ArrayList<>();
+                    for (DocumentSnapshot doc : querySnapshot) {
+                        LastActivity lastActivity = doc.toObject(LastActivity.class);
+                        if (lastActivity != null) {
+                            activityList.add(lastActivity);
+                        }
+                    }
+                    liveData.setValue(activityList);
+                })
+                .addOnFailureListener(e -> liveData.setValue(null));
+        return liveData;
+    }
+
 }

@@ -18,4 +18,7 @@ public class ActivitiesRepository extends BaseRepository<LastActivity, LastActiv
     protected Query getQueryForExist(LastActivity entity) {
         return getCollection().whereEqualTo("babyId", entity.getBabyId());
     }
+    public Query getActivitiesForBabyId(String babyId) {
+        return getCollection().whereEqualTo("babyId", babyId);
+    }
 }

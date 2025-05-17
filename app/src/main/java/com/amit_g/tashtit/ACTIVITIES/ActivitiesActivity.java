@@ -2,6 +2,8 @@ package com.amit_g.tashtit.ACTIVITIES;
 
 import android.annotation.SuppressLint;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +43,7 @@ public class ActivitiesActivity extends BaseActivity {
     private LastActivity activity;
     private Button btnSelectTime;
     private TextView tvSelectedTime;
+    private SharedPreferences sharedPreferences;
     //private LocalTime selectedTime;
 
     @Override
@@ -55,6 +58,7 @@ public class ActivitiesActivity extends BaseActivity {
         });
         activity = new LastActivity();
         initializeViews();
+        sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         setSpinner();
         setViewModel();
         setListeners();
@@ -112,7 +116,8 @@ public class ActivitiesActivity extends BaseActivity {
                 activity.setDate(System.currentTimeMillis());
                 activity.setDetails(etNote.getText().toString());
                 activity.setAction(Action.valueOf(actionSpinner.getSelectedItem().toString()));
-
+                String babyId = sharedPreferences.getString("selectedBabyIdFs", null);
+                activity.setBabyId(babyId);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getTime() == 0L) {
                     LocalTime parsedTime = LocalTime.parse(tvSelectedTime.getText().toString(), DateTimeFormatter.ofPattern("HH:mm"));
                     activity.setTime(DateUtil.localTimeToLong(parsedTime));
