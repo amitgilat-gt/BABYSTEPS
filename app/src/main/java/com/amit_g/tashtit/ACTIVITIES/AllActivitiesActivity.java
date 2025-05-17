@@ -83,7 +83,7 @@ public class AllActivitiesActivity extends BaseActivity {
     protected void initializeViews() {
         rvActivities = findViewById(R.id.rvProgress);
         fabAddActivity = findViewById(R.id.fabAddProgress);
-        menuRecyclerView = findViewById(R.id.menuRecyclerView);
+        menuRecyclerView = findViewById(R.id.rvMenuProgress);
         btnNevigations navList = new btnNevigations();
 
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));

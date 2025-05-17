@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -115,15 +117,31 @@ public class HomeActivity extends BaseActivity {
                 @Override
                 public void onChanged(List<Baby> babies) {
                     if (babies != null && !babies.isEmpty()) {
-                        // Extract baby names from Baby objects
                         List<String> babyNames = new ArrayList<>();
-                        for (Baby baby : babies) {
-                            String babyName = baby.getName();
-                            babyNames.add(babyName != null ? babyName : "Unknown Baby");
+                        List<Baby> babyList = new ArrayList<>(babies); // Copy to final list for inner use
+
+                        for (Baby baby : babyList) {
+                            babyNames.add(baby.getName() != null ? baby.getName() : "Unknown Baby");
                         }
+
                         updateSpinner(babyNames);
+
+                        // Set listener AFTER spinner is populated
+                        spBaby.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                // Get the selected baby's idFs
+                                String selectedBabyIdFs = babyList.get(position).getIdFs();
+                                // Save to SharedPreferences
+                                sharedPreferences.edit().putString("selectedBabyIdFs", selectedBabyIdFs).apply();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+                                // Optional: Handle no selection
+                            }
+                        });
                     } else {
-                        // No babies connected
                         updateSpinnerWithNoData();
                     }
                 }
@@ -132,6 +150,7 @@ public class HomeActivity extends BaseActivity {
             updateSpinnerWithNoData();
         }
     }
+
 
     private void updateSpinner(List<String> babyNames) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(

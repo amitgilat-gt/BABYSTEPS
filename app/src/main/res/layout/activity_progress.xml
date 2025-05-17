@@ -24,7 +24,7 @@
 
     <!-- Menu RecyclerView (same as in home activity) -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/menuRecyclerView"
+        android:id="@+id/rvMenuProgress"
         android:layout_width="match_parent"
         android:layout_height="94dp"
         android:layout_marginTop="16dp"
@@ -42,7 +42,7 @@
         android:background="#BDBDBD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/menuRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/rvMenuProgress" />
 
     <!-- Activities List Title -->
     <TextView

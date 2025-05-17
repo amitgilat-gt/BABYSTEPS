@@ -1,5 +1,7 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +35,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
     private Button btnPut;
     private Button btnCancelSt;
     private ProgressViewModel viewModel;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         setContentView(R.layout.activity_growth);
         initializeViews();
         setValidation();
+        sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         setListeners();
         setViewModel();
     }
@@ -69,9 +73,18 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
                     progress.setHeight(Double.parseDouble(etHeight.getText().toString()));
                     progress.setWeight(Double.parseDouble(etWeight.getText().toString()));
                     progress.setDate(DateUtil.stringDateToLong(etDate.getText().toString()));
+                    String babyId = sharedPreferences.getString("selectedBabyIdFs", null);
+                    progress.setBabyId(babyId);
                     viewModel.add(progress);
                     Toast.makeText(GrowthActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
+            }
+        });
+        btnCancelSt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

@@ -14,7 +14,7 @@ public class Progress extends BaseEntity {
     }
 
     public Progress(String babyId, long date, double weight, double height) {
-        babyId = babyId;
+        this.babyId = babyId;
         this.date = date;
         this.weight = weight;
         this.height = height;
@@ -25,7 +25,7 @@ public class Progress extends BaseEntity {
     }
 
     public void setBabyId(String babyId) {
-        babyId = babyId;
+         this.babyId = babyId;
     }
 
     public long getDate() {

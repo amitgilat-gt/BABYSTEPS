@@ -19,4 +19,7 @@ public class ProgressRepository extends BaseRepository<Progress, AllProgress> {
     protected Query getQueryForExist(Progress entity) {
         return getCollection().whereEqualTo("babyId", entity.getBabyId());
     }
+    public Query getQueryForBabyId(String babyId) {
+        return getCollection().whereEqualTo("babyId", babyId);
+    }
 }
