@@ -2,7 +2,9 @@ package com.amit_g.tashtit.ACTIVITIES;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -15,18 +17,34 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amit_g.dto.R1Request;
+import com.amit_g.dto.R1Response;
 import com.amit_g.helper.DateUtil;
 import com.amit_g.model.AllProgress;
+import com.amit_g.model.Baby;
+import com.amit_g.model.Progress;
 import com.amit_g.model.btnNevigation;
 import com.amit_g.model.btnNevigations;
+import com.amit_g.network.OpenRouterApi;
+import com.amit_g.network.RetrofitClient;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.ADPTERS.ProgressAdapter;
 import com.amit_g.tashtit.R;
+import com.amit_g.viewmodel.BabiesViewModel;
 import com.amit_g.viewmodel.ProgressViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Collections;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProgressActivity extends BaseActivity {
 
@@ -36,6 +54,12 @@ public class ProgressActivity extends BaseActivity {
     private ProgressViewModel viewModel;
     private RecyclerView rvMenuProgress;
     private NevigationAdapter nevAdapter;
+    private Button btnPercentileGenerator;
+    private Progress latestProgress = null;
+    private BabiesViewModel babiesViewModel;
+    private String babyId;
+    private TextView tvPercentileResult;
+
 
 
     @Override
@@ -75,6 +99,8 @@ public class ProgressActivity extends BaseActivity {
         rvProgress = findViewById(R.id.rvProgress);
         fabAddProgress = findViewById(R.id.fabAddProgress);
         rvMenuProgress = findViewById(R.id.rvMenuProgress);
+        btnPercentileGenerator = findViewById(R.id.btnGeneratePercentile);
+        tvPercentileResult = findViewById(R.id.tvPercentileResult);
         btnNevigations navList = new btnNevigations();
         navList.add(new btnNevigation("Growth", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
@@ -109,25 +135,35 @@ public class ProgressActivity extends BaseActivity {
                 navigateToActivity(GrowthActivity.class);
             }
         });
+        btnPercentileGenerator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (latestProgress != null) {
+                    calculatePercentiles(latestProgress);
+                } else {
+                    Log.e("Percentile", "No progress data available.");
+                }
+            }
+        });
     }
 
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ProgressViewModel.class);
-        String babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
+        babiesViewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
+        babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
 
         if (babyId != null) {
             viewModel.getProgressForBabyId(babyId).observe(this, progresses -> {
-                if (progresses != null) {
-                    // Sort by date descending
+                if (progresses != null && !progresses.isEmpty()) {
                     Collections.sort(progresses, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
-
                     adapter.setItems(progresses);
                     adapter.notifyDataSetChanged();
-                } else {
-                    // handle empty or error case here
+
+                    latestProgress = progresses.get(0); // Save the most recent progress
                 }
             });
+
 
         }
     }
@@ -136,5 +172,89 @@ public class ProgressActivity extends BaseActivity {
         super.onResume();
         setViewModel(); // Refresh baby list every time you return to HomeActivity
     }
+    private void calculatePercentiles(Progress progress) {
+        if (babyId == null) {
+            Log.e("Percentile", "Baby ID is null");
+            return;
+        }
+
+        babiesViewModel.getBabyById(babyId).addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                Baby baby = documentSnapshot.toObject(Baby.class);
+                if (baby == null) {
+                    Log.e("Percentile", "Baby data is null");
+                    return;
+                }
+                String babyGender = baby.getGender().toString(); // Assumes enum or String with "MALE"/"FEMALE"
+                int babyAgeMonths = DateUtil.getAgeInMonths(baby.getBirthDate(),progress.getDate());
+
+                String promptText = "A baby " + (babyGender.equalsIgnoreCase("MALE") ? "boy" : "girl") + " is " +
+                        babyAgeMonths + " months old, weighs " + progress.getWeight() +
+                        " kg and is " + progress.getHeight() +
+                        " cm tall. What are his/her height and weight percentiles? Please respond in JSON with keys: height_percentile and weight_percentile.";
+
+                List<R1Request.Message> messages = Collections.singletonList(
+                        new R1Request.Message("user", promptText)
+                );
+
+                R1Request request = new R1Request("deepseek/deepseek-r1:free", messages);
+                Gson gson = new Gson();
+                String jsonRequest = gson.toJson(request);
+                Log.d("API_REQUEST_JSON", jsonRequest);
+
+
+                OpenRouterApi api = RetrofitClient.getInstance().create(OpenRouterApi.class);
+                api.getPercentile(request).enqueue(new Callback<R1Response>() {
+                    @Override
+                    public void onResponse(Call<R1Response> call, Response<R1Response> response) {
+                        String modelReply = response.body().getChoices().get(0).getMessage().getContent();
+
+                        if (modelReply == null || modelReply.trim().isEmpty()) {
+                            Log.e("Percentile", "Empty response from model");
+                            runOnUiThread(() -> tvPercentileResult.setText("Model returned an empty response."));
+                            return;
+                        }
+
+                        // Strip backticks and trim
+                        modelReply = modelReply.replaceAll("(?s)```(?:json)?\\s*", "").replaceAll("```", "").trim();
+
+                        try {
+                            JSONObject json = new JSONObject(modelReply);
+                            String heightPercentile = json.optString("height_percentile");
+                            String weightPercentile = json.optString("weight_percentile");
+
+                            Log.d("Percentile", "Height: " + heightPercentile + ", Weight: " + weightPercentile);
+
+                            runOnUiThread(() -> {
+                                tvPercentileResult.setText(
+                                        "Height Percentile: " + heightPercentile + "\n" +
+                                                "Weight Percentile: " + weightPercentile
+                                );
+                            });
+                        } catch (JSONException e) {
+                            Log.e("Percentile", "Failed to parse JSON from model: " + modelReply);
+                            runOnUiThread(() -> tvPercentileResult.setText("Failed to parse response."));
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<R1Response> call, Throwable t) {
+                        Log.e("Percentile", "API call error: ", t);
+                    }
+                });
+
+            } else {
+                Log.e("Percentile", "No baby found for id " + babyId);
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Percentile", "Error fetching baby by id", e);
+        });
+    }
+
+
+
+
 
 }

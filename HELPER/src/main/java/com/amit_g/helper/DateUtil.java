@@ -22,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -244,6 +245,26 @@ public class DateUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault());
         return time.format(formatter);
     }
+    public static int getAgeInMonths(long birthDateMillis, long referenceDateMillis) {
+        Calendar birthDate = Calendar.getInstance();
+        birthDate.setTimeInMillis(birthDateMillis);
+
+        Calendar referenceDate = Calendar.getInstance();
+        referenceDate.setTimeInMillis(referenceDateMillis);
+
+        int yearsDiff = referenceDate.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+        int monthsDiff = referenceDate.get(Calendar.MONTH) - birthDate.get(Calendar.MONTH);
+
+        int totalMonths = yearsDiff * 12 + monthsDiff;
+
+        // If the reference day of the month is before the birth day, subtract 1
+        if (referenceDate.get(Calendar.DAY_OF_MONTH) < birthDate.get(Calendar.DAY_OF_MONTH)) {
+            totalMonths--;
+        }
+
+        return Math.max(totalMonths, 0); // Prevent negative age
+    }
+
 
 
 }
