@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     private static final String BASE_URL = "https://openrouter.ai/api/"; // Correct base URL
-    private static final String API_KEY = "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"; // Replace with your actual API key
+    private static final String API_KEY = "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"; // Replace with your actual API key
     private static Retrofit retrofit;
 
     public static Retrofit getInstance() {

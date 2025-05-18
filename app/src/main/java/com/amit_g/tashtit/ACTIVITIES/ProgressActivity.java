@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -139,7 +141,18 @@ public class ProgressActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (latestProgress != null) {
-                    calculatePercentiles(latestProgress);
+                    new AlertDialog.Builder(ProgressActivity.this)
+                            .setTitle("Generate Percentile")
+                            .setMessage("This process might take a while. Are you sure you want to continue?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                calculatePercentiles(latestProgress);
+                                showProgressDialog("Generating Percentile", "Please wait...");
+                                dialog.dismiss();
+                            })
+                            .setNegativeButton("No", (dialog, which) -> {
+                                dialog.dismiss();
+                            })
+                            .show();
                 } else {
                     Log.e("Percentile", "No progress data available.");
                 }
@@ -172,6 +185,8 @@ public class ProgressActivity extends BaseActivity {
         super.onResume();
         setViewModel(); // Refresh baby list every time you return to HomeActivity
     }
+
+
     private void calculatePercentiles(Progress progress) {
         if (babyId == null) {
             Log.e("Percentile", "Baby ID is null");
@@ -209,6 +224,7 @@ public class ProgressActivity extends BaseActivity {
             api.getPercentile(request).enqueue(new Callback<R1Response>() {
                 @Override
                 public void onResponse(Call<R1Response> call, Response<R1Response> response) {
+                    hideProgressDialog();
                     if (!response.isSuccessful()) {
                         Log.e("Percentile", "Unsuccessful response: " + response.code());
                         try {
