@@ -114,7 +114,6 @@ public class GalleryActivity extends BaseActivity {
                     }
                 });
 
-        // This launcher is needed if you need to check the permission
         requestPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
