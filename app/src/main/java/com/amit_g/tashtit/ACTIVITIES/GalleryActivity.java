@@ -73,8 +73,7 @@ public class GalleryActivity extends BaseActivity {
         fabAddPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Global.takePicture(GalleryActivity.this, cameraLauncher, galleryLauncher);
-
+                Global.takePicture(GalleryActivity.this, cameraLauncher, galleryLauncher, requestPermissionLauncher);
             }
         });
     }
@@ -88,7 +87,7 @@ public class GalleryActivity extends BaseActivity {
                         Gallery gallery = new Gallery();
                         gallery.setPicture(BitMapHelper.bitmapToString(bitmapPhoto));
                         gallery.setDate(System.currentTimeMillis());
-
+                        gallery.setBabyId(getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null));
                         viewModel.add(gallery);
                     } else {
                         Toast.makeText(this, "Failed to take picture", Toast.LENGTH_SHORT).show();

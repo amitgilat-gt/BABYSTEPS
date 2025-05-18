@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- ✅ Permissions must go here, before <application> -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,48 +17,31 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TASHTIT"
         tools:targetApi="31">
+
+        <!-- Your activities here -->
         <activity
             android:name=".ACTIVITIES.ProgressActivity"
             android:exported="false" />
         <activity
             android:name=".ACTIVITIES.ConnectToBabyActivity"
-            android:exported="false" /> <!-- Login Activity -->
+            android:exported="false" />
         <activity
             android:name=".ACTIVITIES.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Other Activities -->
-        <activity
-            android:name=".ACTIVITIES.AllActivitiesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.ActivitiesActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.HomeActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ACTIVITIES.GrowthActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.GalleryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.ActivityBabySign"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.UserActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.BASE.BaseActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ACTIVITIES.MainActivity"
-            android:exported="false" />
-    </application>
+        </activity>
+        <activity android:name=".ACTIVITIES.HomeActivity" android:exported="true" />
+        <activity android:name=".ACTIVITIES.GalleryActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.AllActivitiesActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.ActivitiesActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.GrowthActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.ActivityBabySign" android:exported="false" />
+        <activity android:name=".ACTIVITIES.UserActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.BASE.BaseActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.MainActivity" android:exported="false" />
 
+    </application>
 </manifest>

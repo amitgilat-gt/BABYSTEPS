@@ -176,8 +176,6 @@ public class ProgressActivity extends BaseActivity {
                     latestProgress = progresses.get(0); // Save the most recent progress
                 }
             });
-
-
         }
     }
     @Override
