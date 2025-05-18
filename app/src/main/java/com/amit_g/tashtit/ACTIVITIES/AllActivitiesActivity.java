@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -18,10 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amit_g.helper.DateUtil;
 import com.amit_g.model.LastActivities;
+import com.amit_g.model.LastActivity;
 import com.amit_g.model.btnNevigation;
 import com.amit_g.model.btnNevigations;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.ADPTERS.ActivitiesAdapter;
+import com.amit_g.tashtit.ADPTERS.BASE.GenericAdapter;
 import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.ActivityViewModel;
@@ -105,6 +108,21 @@ public class AllActivitiesActivity extends BaseActivity {
                 navigateToActivity(ActivitiesActivity.class);
             }
         });
+        adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<LastActivity>() {
+            @Override
+            public boolean onItemLongClick(LastActivity item, int position) {
+                new AlertDialog.Builder(AllActivitiesActivity.this) // Replace `context` with your Activity or Fragment context
+                        .setTitle("Delete Entry")
+                        .setMessage("Are you sure you want to delete this activity?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            viewModel.delete(item);
+                            navigateToActivity(AllActivitiesActivity.class);
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                        .show();
+                return true;
+            }
+        });
     }
     protected void setRecyclerView2(btnNevigations navList) {
         menuAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
@@ -138,5 +156,6 @@ public class AllActivitiesActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         setViewModel();
+        adapter.notifyDataSetChanged();
     }
 }
