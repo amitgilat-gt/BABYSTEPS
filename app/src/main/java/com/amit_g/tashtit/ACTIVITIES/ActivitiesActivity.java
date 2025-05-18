@@ -58,9 +58,9 @@ public class ActivitiesActivity extends BaseActivity {
         });
         activity = new LastActivity();
         initializeViews();
+        setViewModel();
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         setSpinner();
-        setViewModel();
         setListeners();
     }
 
@@ -136,6 +136,7 @@ public class ActivitiesActivity extends BaseActivity {
             }
         });
     }
+
 
     @Override
     protected void setViewModel() {

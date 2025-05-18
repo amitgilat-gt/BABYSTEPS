@@ -23,7 +23,7 @@ public class ActivityViewModel extends BaseViewModel {
 
     public ActivityViewModel(Application application) {
         super(LastActivity.class, LastActivities.class, application);
-        repository = new ActivitiesRepository(application);
+
 
         latestActivity = Transformations.switchMap(selectedBabyId, babyId -> {
             if (babyId == null) {
@@ -48,6 +48,7 @@ public class ActivityViewModel extends BaseViewModel {
 
     @Override
     protected BaseRepository createRepository(Application application) {
+        repository = new ActivitiesRepository(application);
         return repository;
     }
 
