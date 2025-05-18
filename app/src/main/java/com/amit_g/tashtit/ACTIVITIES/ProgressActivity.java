@@ -183,7 +183,7 @@ public class ProgressActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setViewModel(); // Refresh baby list every time you return to HomeActivity
+        setViewModel();
     }
 
 

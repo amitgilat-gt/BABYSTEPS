@@ -28,6 +28,7 @@ import com.amit_g.viewmodel.ActivityViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.time.LocalTime;
+import java.util.Collections;
 
 public class AllActivitiesActivity extends BaseActivity {
     private RecyclerView rvActivities;
@@ -36,6 +37,7 @@ public class AllActivitiesActivity extends BaseActivity {
     private ActivitiesAdapter adapter;
     private RecyclerView menuRecyclerView;
     private NevigationAdapter menuAdapter;
+    private String babyId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,12 +125,18 @@ public class AllActivitiesActivity extends BaseActivity {
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
-        viewModel.getAll();
-        viewModel.getLiveDataCollection().observe(this, new Observer<LastActivities>() {
-            @Override
-            public void onChanged(LastActivities activities) {
+        babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
+        viewModel.getActivitiesForBabyId(babyId).observe(this, activities -> {
+            if (activities != null && !activities.isEmpty()) {
+                Collections.sort(activities, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                 adapter.setItems(activities);
+                adapter.notifyDataSetChanged();
             }
         });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setViewModel();
     }
 }
