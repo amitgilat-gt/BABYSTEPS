@@ -179,79 +179,97 @@ public class ProgressActivity extends BaseActivity {
         }
 
         babiesViewModel.getBabyById(babyId).addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                Baby baby = documentSnapshot.toObject(Baby.class);
-                if (baby == null) {
-                    Log.e("Percentile", "Baby data is null");
-                    return;
-                }
-                String babyGender = baby.getGender().toString(); // Assumes enum or String with "MALE"/"FEMALE"
-                int babyAgeMonths = DateUtil.getAgeInMonths(baby.getBirthDate(),progress.getDate());
-
-                String promptText = "A baby " + (babyGender.equalsIgnoreCase("MALE") ? "boy" : "girl") + " is " +
-                        babyAgeMonths + " months old, weighs " + progress.getWeight() +
-                        " kg and is " + progress.getHeight() +
-                        " cm tall. What are his/her height and weight percentiles? Please respond in JSON with keys: height_percentile and weight_percentile.";
-
-                List<R1Request.Message> messages = Collections.singletonList(
-                        new R1Request.Message("user", promptText)
-                );
-
-                R1Request request = new R1Request("deepseek/deepseek-r1:free", messages);
-                Gson gson = new Gson();
-                String jsonRequest = gson.toJson(request);
-                Log.d("API_REQUEST_JSON", jsonRequest);
-
-
-                OpenRouterApi api = RetrofitClient.getInstance().create(OpenRouterApi.class);
-                api.getPercentile(request).enqueue(new Callback<R1Response>() {
-                    @Override
-                    public void onResponse(Call<R1Response> call, Response<R1Response> response) {
-                        String modelReply = response.body().getChoices().get(0).getMessage().getContent();
-
-                        if (modelReply == null || modelReply.trim().isEmpty()) {
-                            Log.e("Percentile", "Empty response from model");
-                            runOnUiThread(() -> tvPercentileResult.setText("Model returned an empty response."));
-                            return;
-                        }
-
-                        // Strip backticks and trim
-                        modelReply = modelReply.replaceAll("(?s)```(?:json)?\\s*", "").replaceAll("```", "").trim();
-
-                        try {
-                            JSONObject json = new JSONObject(modelReply);
-                            String heightPercentile = json.optString("height_percentile");
-                            String weightPercentile = json.optString("weight_percentile");
-
-                            Log.d("Percentile", "Height: " + heightPercentile + ", Weight: " + weightPercentile);
-
-                            runOnUiThread(() -> {
-                                tvPercentileResult.setText(
-                                        "Height Percentile: " + heightPercentile + "\n" +
-                                                "Weight Percentile: " + weightPercentile
-                                );
-                            });
-                        } catch (JSONException e) {
-                            Log.e("Percentile", "Failed to parse JSON from model: " + modelReply);
-                            runOnUiThread(() -> tvPercentileResult.setText("Failed to parse response."));
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<R1Response> call, Throwable t) {
-                        Log.e("Percentile", "API call error: ", t);
-                    }
-                });
-
-            } else {
+            if (!documentSnapshot.exists()) {
                 Log.e("Percentile", "No baby found for id " + babyId);
+                return;
             }
+
+            Baby baby = documentSnapshot.toObject(Baby.class);
+            if (baby == null) {
+                Log.e("Percentile", "Baby data is null");
+                return;
+            }
+
+            String babyGender = baby.getGender().toString();
+            int babyAgeMonths = DateUtil.getAgeInMonths(baby.getBirthDate(), progress.getDate());
+
+            String promptText = "A baby " + (babyGender.equalsIgnoreCase("MALE") ? "boy" : "girl") + " is " +
+                    babyAgeMonths + " months old, weighs " + progress.getWeight() +
+                    " kg and is " + progress.getHeight() +
+                    " cm tall. What are his/her height and weight percentiles? Please respond in JSON with keys: height_percentile and weight_percentile.";
+
+            List<R1Request.Message> messages = Collections.singletonList(
+                    new R1Request.Message("user", promptText)
+            );
+
+            R1Request request = new R1Request("deepseek/deepseek-r1:free", messages);
+            Log.d("API_REQUEST_JSON", new Gson().toJson(request));
+
+            OpenRouterApi api = RetrofitClient.getInstance().create(OpenRouterApi.class);
+            api.getPercentile(request).enqueue(new Callback<R1Response>() {
+                @Override
+                public void onResponse(Call<R1Response> call, Response<R1Response> response) {
+                    if (!response.isSuccessful()) {
+                        Log.e("Percentile", "Unsuccessful response: " + response.code());
+                        try {
+                            if (response.errorBody() != null) {
+                                Log.e("Percentile", "Error body: " + response.errorBody().string());
+                            }
+                        } catch (Exception e) {
+                            Log.e("Percentile", "Error reading error body", e);
+                        }
+                        runOnUiThread(() -> tvPercentileResult.setText("Failed to get response from model."));
+                        return;
+                    }
+
+                    R1Response r1Response = response.body();
+                    if (r1Response == null || r1Response.getChoices() == null || r1Response.getChoices().isEmpty()) {
+                        Log.e("Percentile", "Empty or null response body or choices");
+                        runOnUiThread(() -> tvPercentileResult.setText("Model returned no useful data."));
+                        return;
+                    }
+
+                    String modelReply = r1Response.getChoices().get(0).getMessage().getContent();
+                    if (modelReply == null || modelReply.trim().isEmpty()) {
+                        Log.e("Percentile", "Model reply is empty");
+                        runOnUiThread(() -> tvPercentileResult.setText("Empty response from model."));
+                        return;
+                    }
+
+                    Log.d("ModelReply", modelReply);
+                    modelReply = modelReply.replaceAll("(?s)```(?:json)?\\s*", "").replaceAll("```", "").trim();
+
+                    try {
+                        JSONObject json = new JSONObject(modelReply);
+                        String heightPercentile = json.optString("height_percentile", "N/A");
+                        String weightPercentile = json.optString("weight_percentile", "N/A");
+
+                        Log.d("Percentile", "Height: " + heightPercentile + ", Weight: " + weightPercentile);
+
+                        runOnUiThread(() -> {
+                            tvPercentileResult.setText(
+                                    "Height Percentile: " + heightPercentile + "\n" +
+                                            "Weight Percentile: " + weightPercentile
+                            );
+                        });
+                    } catch (JSONException e) {
+                        Log.e("Percentile", "Failed to parse JSON from model: " + modelReply);
+                        runOnUiThread(() -> tvPercentileResult.setText("Could not parse response as JSON."));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<R1Response> call, Throwable t) {
+                    Log.e("Percentile", "API call failed", t);
+                    runOnUiThread(() -> tvPercentileResult.setText("API call failed: " + t.getMessage()));
+                }
+            });
+
         }).addOnFailureListener(e -> {
-            Log.e("Percentile", "Error fetching baby by id", e);
+            Log.e("Percentile", "Error fetching baby data", e);
         });
     }
+
 
 
 

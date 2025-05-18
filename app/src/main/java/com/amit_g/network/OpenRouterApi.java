@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 public interface OpenRouterApi {
 
     @Headers({
-            "Authorization: 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", // REPLACE THIS SAFELY
+            "Authorization: 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", // REPLACE THIS SAFELY
             "Content-Type: application/json"
     })
     @POST("v1/chat/completions")
