@@ -21,4 +21,14 @@ public class ActivitiesRepository extends BaseRepository<LastActivity, LastActiv
     public Query getActivitiesForBabyId(String babyId) {
         return getCollection().whereEqualTo("babyId", babyId);
     }
+
+    public Query getLatestActivityForBabyId(String babyId) {
+//        return getCollection()
+//                .whereEqualTo("babyId", babyId)
+//                .orderBy("date", Query.Direction.DESCENDING)
+//                .orderBy("time", Query.Direction.DESCENDING)
+//                .limit(1);
+        return getCollection().whereEqualTo("babyId", babyId).limit(1);
+    }
+
 }
