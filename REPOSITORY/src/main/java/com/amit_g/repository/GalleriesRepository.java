@@ -19,4 +19,8 @@ public class GalleriesRepository extends BaseRepository<Gallery, Galleries> {
     protected Query getQueryForExist(Gallery entity) {
         return getCollection().whereEqualTo("picture",entity.getPicture());
     }
+
+    public Query getPicturesForBabyId(String babyId) {
+        return getCollection().whereEqualTo("babyId",babyId);
+    }
 }

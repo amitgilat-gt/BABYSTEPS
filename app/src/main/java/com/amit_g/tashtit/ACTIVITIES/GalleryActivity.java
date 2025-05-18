@@ -32,6 +32,7 @@ import com.amit_g.viewmodel.GalleryViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Collections;
 import java.util.List;
 
 import kotlinx.coroutines.GlobalScope;
@@ -45,7 +46,7 @@ public class GalleryActivity extends BaseActivity {
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private Gallery gallery;
-
+    private String babyId;
     private Bitmap bitmapPhoto;
 
 
@@ -148,12 +149,20 @@ public class GalleryActivity extends BaseActivity {
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(GalleryViewModel.class);
-        viewModel.getAll();
-        viewModel.getLiveDataCollection().observe(this, new Observer<Galleries>() {
+        babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
+        viewModel.getPicturesForBabyId(babyId).observe(this, new Observer<List<Gallery>>() {
             @Override
-            public void onChanged(Galleries galleries) {
+            public void onChanged(List<Gallery> galleries) {
+                Collections.sort(galleries, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                 adapter.setItems(galleries);
+                adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setViewModel();
     }
 }
