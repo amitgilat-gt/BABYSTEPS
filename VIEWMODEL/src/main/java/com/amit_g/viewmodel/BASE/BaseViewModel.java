@@ -112,14 +112,10 @@ public abstract class BaseViewModel<TEntity extends BaseEntity, TCollection exte
                 .addOnSuccessListener(new OnSuccessListener<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        if (!aBoolean) {
-                            if (StringUtil.isNullOrEmpty(entity.getIdFs()))
-                                add(entity, pictureFieldName, pictureUrlFieldName);
-                            else
-                                update(entity, pictureFieldName, pictureUrlFieldName);
-                        }
-                        else {
-                            lvSuccess.setValue(false);
+                        if (StringUtil.isNullOrEmpty(entity.getIdFs()) || !aBoolean) {
+                            add(entity, pictureFieldName, pictureUrlFieldName);
+                        } else {
+                            update(entity, pictureFieldName, pictureUrlFieldName);
                         }
                     }
                 })

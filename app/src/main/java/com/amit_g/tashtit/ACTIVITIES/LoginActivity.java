@@ -76,7 +76,7 @@ public class LoginActivity extends BaseActivity {
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                navigateToActivity(UserActivity.class);
+                navigateToActivity(RegisterActivity.class);
             }
         });
     }

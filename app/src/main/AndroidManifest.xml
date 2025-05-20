@@ -39,7 +39,7 @@
         <activity android:name=".ACTIVITIES.ActivitiesActivity" android:exported="false" />
         <activity android:name=".ACTIVITIES.GrowthActivity" android:exported="false" />
         <activity android:name=".ACTIVITIES.ActivityBabySign" android:exported="false" />
-        <activity android:name=".ACTIVITIES.UserActivity" android:exported="false" />
+        <activity android:name=".ACTIVITIES.RegisterActivity" android:exported="false" />
         <activity android:name=".ACTIVITIES.BASE.BaseActivity" android:exported="false" />
         <activity android:name=".ACTIVITIES.MainActivity" android:exported="false" />
 

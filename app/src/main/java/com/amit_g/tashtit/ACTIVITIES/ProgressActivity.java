@@ -199,6 +199,7 @@ public class ProgressActivity extends BaseActivity {
                 Intent intent = new Intent(ProgressActivity.this, GrowthActivity.class);
                 intent.putExtra("progress", item); // must implement Serializable
                 startActivity(intent);
+                setViewModel();
             }
         });
 

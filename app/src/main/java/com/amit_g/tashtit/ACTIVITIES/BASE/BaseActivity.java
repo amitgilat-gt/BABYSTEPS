@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amit_g.tashtit.ACTIVITIES.ActivityBabySign;
-import com.amit_g.tashtit.ACTIVITIES.UserActivity;
+import com.amit_g.tashtit.ACTIVITIES.RegisterActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.amit_g.tashtit.ACTIVITIES.MainActivity;
@@ -85,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     navigateToActivity(ActivityBabySign.class);
                 }
                 else if(itemId == R.id.navigation_cities){
-                    navigateToActivity(UserActivity.class);
+                    navigateToActivity(RegisterActivity.class);
                 }
                 else{
 

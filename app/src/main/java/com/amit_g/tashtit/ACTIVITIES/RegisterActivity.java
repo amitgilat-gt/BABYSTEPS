@@ -23,7 +23,7 @@ import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.UsersViewModel;
 
-public class UserActivity extends BaseActivity implements EntryValidation {
+public class RegisterActivity extends BaseActivity implements EntryValidation {
 
     private EditText etUserName, etPassword, etEmail;
     private Button btnSignUp;
@@ -49,7 +49,7 @@ public class UserActivity extends BaseActivity implements EntryValidation {
         etUserName = findViewById(R.id.etUserName);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPasswordB);
-        cbNotification = findViewById(R.id.cbNotification);
+        //cbNotification = findViewById(R.id.cbNotification);
         btnSignUp = findViewById(R.id.btnSignUp);
         tvLogin = findViewById(R.id.tvLogin);
     }
