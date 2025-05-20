@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,8 +26,11 @@ import com.amit_g.model.Baby;
 import com.amit_g.model.Galleries;
 import com.amit_g.model.Gallery;
 import com.amit_g.model.Gender;
+import com.amit_g.model.btnNevigation;
+import com.amit_g.model.btnNevigations;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.ADPTERS.GalleryAdapter;
+import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.GalleryViewModel;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -48,8 +52,8 @@ public class GalleryActivity extends BaseActivity {
     private Gallery gallery;
     private String babyId;
     private Bitmap bitmapPhoto;
-
-
+    private RecyclerView rvGalleryMenu;
+    private NevigationAdapter menuAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,8 @@ public class GalleryActivity extends BaseActivity {
     protected void initializeViews() {
         fabAddPhoto = findViewById(R.id.fabAddPhoto);
         rvGallery = findViewById(R.id.rvGallery);
+        rvGalleryMenu = findViewById(R.id.rvGalleryMenu);
+        setupGalleryMenu();
     }
 
     @Override
@@ -165,4 +171,30 @@ public class GalleryActivity extends BaseActivity {
         super.onResume();
         setViewModel();
     }
+
+    private void setupGalleryMenu() {
+        btnNevigations navList = new btnNevigations();
+        navList.add(new btnNevigation("Gallery", GalleryActivity.class));
+        navList.add(new btnNevigation("Growth", ProgressActivity.class));
+        navList.add(new btnNevigation("User", UserActivity.class));
+        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
+        navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
+        navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
+
+        menuAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
+            holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
+        }, (holder, item, position) -> {
+            Button button = (Button) holder.getView("btnNev");
+            button.setText(item.getLabel());
+
+            button.setOnClickListener(v -> {
+
+                startActivity(new Intent(GalleryActivity.this, item.getTargetActivity()));
+            });
+        });
+
+        rvGalleryMenu.setAdapter(menuAdapter);
+        rvGalleryMenu.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+    }
+
 }
