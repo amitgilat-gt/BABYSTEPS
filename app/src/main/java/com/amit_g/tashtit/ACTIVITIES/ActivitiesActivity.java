@@ -44,6 +44,7 @@ public class ActivitiesActivity extends BaseActivity {
     private Button btnSelectTime;
     private TextView tvSelectedTime;
     private SharedPreferences sharedPreferences;
+    private TextView textView2;
     //private LocalTime selectedTime;
 
     @Override
@@ -71,12 +72,14 @@ public class ActivitiesActivity extends BaseActivity {
         btnCancelNote = findViewById(R.id.btnCancelNote);
         btnSelectTime = findViewById(R.id.btnSelectTime);
         tvSelectedTime = findViewById(R.id.tvSelectedTime);
+        textView2 = findViewById(R.id.textView2);
 
         // Get passed activity (if editing)
         LastActivity passedActivity = (LastActivity) getIntent().getSerializableExtra("activity");
         if (passedActivity != null) {
             activity = passedActivity;
             btnAddNote.setText("Update");
+            textView2.setText("Update Activity");
             etNote.setText(activity.getDetails());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getTime() != 0L) {
@@ -165,6 +168,8 @@ public class ActivitiesActivity extends BaseActivity {
         }
 
         List<String> typeList = new ArrayList<>();
+        typeList.add("Select activity"); // Placeholder
+
         for (Action action : Action.values()) {
             typeList.add(action.name());
         }
@@ -179,7 +184,10 @@ public class ActivitiesActivity extends BaseActivity {
             if (index >= 0) {
                 actionSpinner.setSelection(index);
             }
+        } else {
+            actionSpinner.setSelection(0); // Default to "Select activity"
         }
     }
+
 
 }

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="#D4E6F1"
     android:padding="16dp"
     tools:context=".ACTIVITIES.ActivitiesActivity">
 
@@ -14,11 +15,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Create New Note"
+        android:gravity="center"
+        android:text="Add Activity"
+        android:textColor="#5C6BC0"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -55,7 +56,7 @@
             android:spinnerMode="dropdown" />
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- New Time Selection Section -->
+    <!-- Time Selection Section -->
     <TextView
         android:id="@+id/timeLabel"
         android:layout_width="wrap_content"
@@ -107,18 +108,30 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Notes Section -->
+    <TextView
+        android:id="@+id/noteLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Notes:"
+        android:textSize="16sp"
+        android:textColor="#757575"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeCardView" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/noteCardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeCardView">
+        app:layout_constraintTop_toBottomOf="@+id/noteLabel">
 
         <EditText
             android:id="@+id/etNote"
