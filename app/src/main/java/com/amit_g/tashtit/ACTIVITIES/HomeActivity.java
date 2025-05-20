@@ -99,12 +99,12 @@ public class HomeActivity extends BaseActivity {
 
 
         btnNevigations navList = new btnNevigations();
-        navList.add(new btnNevigation("Growth", ProgressActivity.class));
+        navList.add(new btnNevigation("Measurements", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
-        navList.add(new btnNevigation("User", UserActivity.class));
-        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
+        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
         navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
+        navList.add(new btnNevigation("Log Out", LoginActivity.class));
 
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("userIdFs", null);
@@ -122,7 +122,22 @@ public class HomeActivity extends BaseActivity {
             button.setText(item.getLabel());
 
             button.setOnClickListener(v -> {
-                startActivity(new Intent(HomeActivity.this, item.getTargetActivity()));
+                if (item.getTargetActivity().equals(LoginActivity.class)) {
+                    // Show logout confirmation dialog
+                    new android.app.AlertDialog.Builder(HomeActivity.this)
+                            .setTitle("Log out")
+                            .setMessage("Are you sure you want to log out?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                sharedPreferences.edit().clear().apply();
+                                Intent intent = new Intent(HomeActivity.this, item.getTargetActivity()); // or Splash/Login activity
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                } else {
+                    startActivity(new Intent(HomeActivity.this, item.getTargetActivity()));
+                }
             });
         });
         buttonRecyclerView.setAdapter(adapter);

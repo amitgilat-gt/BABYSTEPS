@@ -104,13 +104,12 @@ public class ProgressActivity extends BaseActivity {
         btnPercentileGenerator = findViewById(R.id.btnGeneratePercentile);
         tvPercentileResult = findViewById(R.id.tvPercentileResult);
         btnNevigations navList = new btnNevigations();
-        navList.add(new btnNevigation("Growth", ProgressActivity.class));
+        navList.add(new btnNevigation("Measurements", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
-        navList.add(new btnNevigation("User", UserActivity.class));
-        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
+        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
         navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
-        navList.add(new btnNevigation("Home", HomeActivity.class));
+        navList.add(new btnNevigation("Log Out", LoginActivity.class));
         setRecyclerView2(navList);
     }
 
