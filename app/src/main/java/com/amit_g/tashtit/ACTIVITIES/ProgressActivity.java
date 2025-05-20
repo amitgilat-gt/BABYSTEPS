@@ -197,10 +197,7 @@ public class ProgressActivity extends BaseActivity {
             @Override
             public void onItemClick(Progress item, int position) {
                 Intent intent = new Intent(ProgressActivity.this, GrowthActivity.class);
-                intent.putExtra("progress_id", item.getIdFs());
-                intent.putExtra("date", item.getDate());
-                intent.putExtra("weight", item.getWeight());
-                intent.putExtra("height", item.getHeight());
+                intent.putExtra("progress", item); // must implement Serializable
                 startActivity(intent);
             }
         });

@@ -60,7 +60,6 @@ public class ActivitiesActivity extends BaseActivity {
         initializeViews();
         setViewModel();
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
-        setSpinner();
         setListeners();
     }
 
@@ -72,7 +71,25 @@ public class ActivitiesActivity extends BaseActivity {
         btnCancelNote = findViewById(R.id.btnCancelNote);
         btnSelectTime = findViewById(R.id.btnSelectTime);
         tvSelectedTime = findViewById(R.id.tvSelectedTime);
+
+        // Get passed activity (if editing)
+        LastActivity passedActivity = (LastActivity) getIntent().getSerializableExtra("activity");
+        if (passedActivity != null) {
+            activity = passedActivity;
+            btnAddNote.setText("Update");
+            etNote.setText(activity.getDetails());
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getTime() != 0L) {
+                tvSelectedTime.setText(DateUtil.localTimeToString(DateUtil.longToLocalTime(activity.getTime())));
+            }
+
+            setSpinner(activity.getAction()); // call AFTER setting views
+        } else {
+            activity = new LastActivity();
+            setSpinner(null); // fresh form
+        }
     }
+
 
     @Override
     protected void setListeners() {
@@ -124,7 +141,7 @@ public class ActivitiesActivity extends BaseActivity {
                 }
 
 
-                viewModel.add(activity);
+                viewModel.save(activity);
                 new Handler().postDelayed(() -> finish(), 1500);
             }
         });
@@ -142,13 +159,12 @@ public class ActivitiesActivity extends BaseActivity {
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
     }
-    protected void setSpinner(){
+    protected void setSpinner(Action selectedAction) {
         if (actionSpinner == null) {
             actionSpinner = findViewById(R.id.spActions);
         }
 
         List<String> typeList = new ArrayList<>();
-        typeList.add("Select action");
         for (Action action : Action.values()) {
             typeList.add(action.name());
         }
@@ -156,5 +172,14 @@ public class ActivitiesActivity extends BaseActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typeList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionSpinner.setAdapter(adapter);
+
+        // Set selection if editing
+        if (selectedAction != null) {
+            int index = typeList.indexOf(selectedAction.name());
+            if (index >= 0) {
+                actionSpinner.setSelection(index);
+            }
+        }
     }
+
 }

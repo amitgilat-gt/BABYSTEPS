@@ -108,6 +108,15 @@ public class AllActivitiesActivity extends BaseActivity {
                 navigateToActivity(ActivitiesActivity.class);
             }
         });
+        adapter.setOnItemClickListener(new GenericAdapter.OnItemClickListener<LastActivity>() {
+            @Override
+            public void onItemClick(LastActivity item, int position) {
+                Intent intent = new Intent(AllActivitiesActivity.this, ActivitiesActivity.class);
+                intent.putExtra("activity", item);
+                startActivity(intent);
+            }
+        });
+
         adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<LastActivity>() {
             @Override
             public boolean onItemLongClick(LastActivity item, int position) {

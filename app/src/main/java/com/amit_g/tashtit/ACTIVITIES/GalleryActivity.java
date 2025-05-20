@@ -30,6 +30,7 @@ import com.amit_g.model.Gender;
 import com.amit_g.model.btnNevigation;
 import com.amit_g.model.btnNevigations;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
+import com.amit_g.tashtit.ADPTERS.BASE.GenericAdapter;
 import com.amit_g.tashtit.ADPTERS.GalleryAdapter;
 import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.R;
@@ -82,6 +83,22 @@ public class GalleryActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 Global.takePicture(GalleryActivity.this, cameraLauncher, galleryLauncher, requestPermissionLauncher);
+            }
+        });
+        adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<Gallery>() {
+            @Override
+            public boolean onItemLongClick(Gallery item, int position) {
+                new AlertDialog.Builder(GalleryActivity.this)
+                        .setTitle("Delete Photo")
+                        .setMessage("Are you sure you want to delete this photo?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            viewModel.delete(item);
+                            setViewModel();
+                            Toast.makeText(GalleryActivity.this, "Photo deleted", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+                return true;
             }
         });
     }

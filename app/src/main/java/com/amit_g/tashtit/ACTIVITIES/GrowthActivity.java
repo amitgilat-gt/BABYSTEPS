@@ -37,6 +37,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
     private Button btnCancelSt;
     private ProgressViewModel viewModel;
     private SharedPreferences sharedPreferences;
+    private Progress progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,28 +56,31 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         etHeight = findViewById(R.id.etHeight);
         etWeight = findViewById(R.id.etWeight);
         etDate = findViewById(R.id.etDate);
-        DateTimeFormatter formatter = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            etDate.setText(LocalDate.now().format(formatter));
-        }
         btnPut = findViewById(R.id.btnPut);
         btnCancelSt = findViewById(R.id.btnCancelSt);
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            btnPut.setText("Update");
-            if (extras.containsKey("date")) {
-                etDate.setText(DateUtil.longDateToString(extras.getLong("date")));
-            }
-            if (extras.containsKey("weight")) {
-                etWeight.setText(String.valueOf(extras.getDouble("weight")));
-            }
-            if (extras.containsKey("height")) {
-                etHeight.setText(String.valueOf(extras.getDouble("height")));
-            }
 
+        sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
+
+        // Set current date by default
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            etDate.setText(LocalDate.now().format(formatter));
+        }
+
+        // Handle edit case
+        Progress passedProgress = (Progress) getIntent().getSerializableExtra("progress");
+        if (passedProgress != null) {
+            btnPut.setText("Update");
+            etHeight.setText(String.valueOf(passedProgress.getHeight()));
+            etWeight.setText(String.valueOf(passedProgress.getWeight()));
+            etDate.setText(DateUtil.longDateToString(passedProgress.getDate()));
+
+            progress = passedProgress;
+        } else {
+            progress = new Progress(); // fresh one
         }
     }
+
 
     @Override
     protected void setListeners() {
@@ -84,24 +88,19 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
             @Override
             public void onClick(View v) {
                 if (validate()) {
-                    Progress progress = new Progress();
                     progress.setHeight(Double.parseDouble(etHeight.getText().toString()));
                     progress.setWeight(Double.parseDouble(etWeight.getText().toString()));
                     progress.setDate(DateUtil.stringDateToLong(etDate.getText().toString()));
                     String babyId = sharedPreferences.getString("selectedBabyIdFs", null);
                     progress.setBabyId(babyId);
 
-                    // Set ID if editing
-                    String progressId = getIntent().getStringExtra("progress_id");
-                    if (progressId != null) {
-                        progress.setIdFs(progressId);
-                    }
-
-                    viewModel.save(progress);
+                    viewModel.save(progress); // will either add or update
                     Toast.makeText(GrowthActivity.this, "Saved", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             }
         });
+
         btnCancelSt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

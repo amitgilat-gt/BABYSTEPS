@@ -2,10 +2,11 @@ package com.amit_g.model;
 
 import com.amit_g.model.BASE.BaseEntity;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class LastActivity extends BaseEntity {
+public class LastActivity extends BaseEntity implements Serializable {
     private String babyId;
     private long date;
     private Action action;
