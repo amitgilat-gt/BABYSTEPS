@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amit_g.helper.DateUtil;
 import com.amit_g.model.Baby;
 import com.amit_g.model.LastActivity;
+import com.amit_g.model.Progress;
 import com.amit_g.model.btnNevigation;
 import com.amit_g.model.btnNevigations;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
@@ -30,6 +31,7 @@ import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.ActivityViewModel;
 import com.amit_g.viewmodel.BabiesViewModel;
+import com.amit_g.viewmodel.ProgressViewModel;
 import com.amit_g.viewmodel.UserBabyViewModel;
 
 import java.util.ArrayList;
@@ -55,6 +57,12 @@ public class HomeActivity extends BaseActivity {
     private TextView activityDetails;
     private ActivityViewModel activityViewModel;
     private List<Baby> babyList = new ArrayList<>();
+    private ProgressViewModel progressViewModel;
+    private View lastProgressSection;
+    private TextView progressDate;
+    private TextView progressWeight;
+    private TextView progressHeight;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +92,11 @@ public class HomeActivity extends BaseActivity {
         activityTime = lastActivitySection.findViewById(R.id.timeText);
         activityDate = lastActivitySection.findViewById(R.id.dateText);
         activityDetails = lastActivitySection.findViewById(R.id.actionTextView);
+        lastProgressSection = findViewById(R.id.lastProgressSection);
+        progressDate = lastProgressSection.findViewById(R.id.tvDate);
+        progressWeight = lastProgressSection.findViewById(R.id.tvWeight);
+        progressHeight = lastProgressSection.findViewById(R.id.tvHeight);
+
 
         btnNevigations navList = new btnNevigations();
         navList.add(new btnNevigation("Growth", ProgressActivity.class));
@@ -125,8 +138,8 @@ public class HomeActivity extends BaseActivity {
                     String selectedBabyIdFs = babyList.get(position).getIdFs();
                     sharedPreferences.edit().putString("selectedBabyIdFs", selectedBabyIdFs).apply();
 
-                    // Fetch all activities for the selected baby and update UI with latest
                     fetchAndDisplayLatestActivity(selectedBabyIdFs);
+                    fetchAndDisplayLatestProgress(selectedBabyIdFs);
                 }
             }
 
@@ -136,6 +149,7 @@ public class HomeActivity extends BaseActivity {
             }
         });
     }
+
 
     private void fetchAndDisplayLatestActivity(String babyIdFs) {
         activityViewModel.getActivitiesForBabyId(babyIdFs).observe(this, activities -> {
@@ -155,6 +169,7 @@ public class HomeActivity extends BaseActivity {
         userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
         babiesViewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
         activityViewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
+        progressViewModel = new ViewModelProvider(this).get(ProgressViewModel.class);
 
         if (userId != null) {
             userBabyViewModel.getBabiesForUserId(userId).observe(this, babies -> {
@@ -174,25 +189,56 @@ public class HomeActivity extends BaseActivity {
                         for (int i = 0; i < babyList.size(); i++) {
                             if (savedBabyId.equals(babyList.get(i).getIdFs())) {
                                 spBaby.setSelection(i);
-                                // Instead of ViewModel handling latest activity, fetch and display locally
                                 fetchAndDisplayLatestActivity(savedBabyId);
+                                fetchAndDisplayLatestProgress(savedBabyId);
                                 break;
                             }
                         }
                     } else if (!babyList.isEmpty()) {
-                        // Select first baby and fetch activities
-                        fetchAndDisplayLatestActivity(babyList.get(0).getIdFs());
+                        String defaultBabyId = babyList.get(0).getIdFs();
+                        fetchAndDisplayLatestActivity(defaultBabyId);
+                        fetchAndDisplayLatestProgress(defaultBabyId);
                     }
                 } else {
                     updateSpinnerWithNoData();
                     updateActivityUI(null);
+                    updateProgressUI(null);
                 }
             });
         } else {
             updateSpinnerWithNoData();
             updateActivityUI(null);
+            updateProgressUI(null);
         }
     }
+
+
+    private void fetchAndDisplayLatestProgress(String babyIdFs) {
+        progressViewModel.getProgressForBabyId(babyIdFs).observe(this, progressList -> {
+            if (progressList != null && !progressList.isEmpty()) {
+                Collections.sort(progressList, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate())); // newest first
+                Progress latestProgress = progressList.get(0);
+                updateProgressUI(latestProgress);
+            } else {
+                updateProgressUI(null);
+            }
+        });
+    }
+
+    private void updateProgressUI(Progress progress) {
+        if (progress != null) {
+            progressDate.setText("Date: " + DateUtil.longDateToString(progress.getDate()));
+            progressWeight.setText("Weight: " + progress.getWeight() + " kg");
+            progressHeight.setText("Height: " + progress.getHeight() + " cm");
+            lastProgressSection.setVisibility(View.VISIBLE);
+        } else {
+            progressDate.setText("No progress yet");
+            progressWeight.setText("");
+            progressHeight.setText("");
+            lastProgressSection.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     // Separate method to update the UI with activity data
     private void updateActivityUI(LastActivity lastActivity) {
@@ -226,8 +272,8 @@ public class HomeActivity extends BaseActivity {
         super.onResume();
         String selectedBabyIdFs = sharedPreferences.getString("selectedBabyIdFs", null);
         if (selectedBabyIdFs != null) {
-            // Instead of ViewModel setter, directly fetch activities
             fetchAndDisplayLatestActivity(selectedBabyIdFs);
+            fetchAndDisplayLatestProgress(selectedBabyIdFs);
         }
     }
 

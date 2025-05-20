@@ -18,32 +18,9 @@ import java.util.List;
 
 public class ActivityViewModel extends BaseViewModel {
     private ActivitiesRepository repository;
- //   private final MutableLiveData<String> selectedBabyId = new MutableLiveData<>();
-//    private final LiveData<LastActivity> latestActivity;
 
     public ActivityViewModel(Application application) {
         super(LastActivity.class, LastActivities.class, application);
-
-
-//        latestActivity = Transformations.switchMap(selectedBabyId, babyId -> {
-//            if (babyId == null) {
-//                return new MutableLiveData<>(null);
-//            }
-//
-//            MutableLiveData<LastActivity> liveData = new MutableLiveData<>();
-//            repository.getLatestActivityForBabyId(babyId).get()
-//                    .addOnSuccessListener(querySnapshot -> {
-//                        if (!querySnapshot.isEmpty()) {
-//                            DocumentSnapshot doc = querySnapshot.getDocuments().get(0);
-//                            LastActivity activity = doc.toObject(LastActivity.class);
-//                            liveData.setValue(activity);
-//                        } else {
-//                            liveData.setValue(null);
-//                        }
-//                    })
-//                    .addOnFailureListener(e -> liveData.setValue(null));
-//            return liveData;
-//        });
     }
 
     @Override
@@ -51,14 +28,6 @@ public class ActivityViewModel extends BaseViewModel {
         repository = new ActivitiesRepository(application);
         return repository;
     }
-
-//    public void setSelectedBabyId(String babyId) {
-//        selectedBabyId.setValue(babyId);
-//    }
-
-//    public LiveData<LastActivity> getLatestActivity() {
-//        return latestActivity;
-//    }
 
     // Keep this if needed elsewhere
     public LiveData<List<LastActivity>> getActivitiesForBabyId(String babyId) {
