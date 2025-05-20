@@ -30,6 +30,7 @@ import com.amit_g.model.btnNevigations;
 import com.amit_g.network.OpenRouterApi;
 import com.amit_g.network.RetrofitClient;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
+import com.amit_g.tashtit.ADPTERS.BASE.GenericAdapter;
 import com.amit_g.tashtit.ADPTERS.NevigationAdapter;
 import com.amit_g.tashtit.ADPTERS.ProgressAdapter;
 import com.amit_g.tashtit.R;
@@ -157,6 +158,21 @@ public class ProgressActivity extends BaseActivity {
                 }
             }
         });
+        adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<Progress>() {
+            @Override
+            public boolean onItemLongClick(Progress item, int position) {
+                new AlertDialog.Builder(ProgressActivity.this)
+                        .setTitle("Delete Measurement")
+                        .setMessage("Are you sure you want to delete this measurement?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            viewModel.delete(item);
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+                return true;
+            }
+        });
+
     }
 
     @Override
