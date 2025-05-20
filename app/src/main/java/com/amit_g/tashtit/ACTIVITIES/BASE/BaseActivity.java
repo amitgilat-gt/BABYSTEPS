@@ -49,7 +49,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             if (title != null)
                 mProgressDialog.setTitle(title);
-            mProgressDialog.setIcon(R.mipmap.ic_launcher);
+            mProgressDialog.setIcon(R.drawable.icon);
             mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             mProgressDialog.setCancelable(false);
         }
