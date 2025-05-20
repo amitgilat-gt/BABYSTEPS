@@ -166,12 +166,25 @@ public class ProgressActivity extends BaseActivity {
                         .setMessage("Are you sure you want to delete this measurement?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             viewModel.delete(item);
+                            setViewModel();
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
                 return true;
             }
         });
+        adapter.setOnItemClickListener(new GenericAdapter.OnItemClickListener<Progress>() {
+            @Override
+            public void onItemClick(Progress item, int position) {
+                Intent intent = new Intent(ProgressActivity.this, GrowthActivity.class);
+                intent.putExtra("progress_id", item.getIdFs());
+                intent.putExtra("date", item.getDate());
+                intent.putExtra("weight", item.getWeight());
+                intent.putExtra("height", item.getHeight());
+                startActivity(intent);
+            }
+        });
+
 
     }
 

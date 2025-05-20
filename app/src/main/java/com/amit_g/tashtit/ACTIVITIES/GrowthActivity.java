@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -61,6 +62,20 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         }
         btnPut = findViewById(R.id.btnPut);
         btnCancelSt = findViewById(R.id.btnCancelSt);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            btnPut.setText("Update");
+            if (extras.containsKey("date")) {
+                etDate.setText(DateUtil.longDateToString(extras.getLong("date")));
+            }
+            if (extras.containsKey("weight")) {
+                etWeight.setText(String.valueOf(extras.getDouble("weight")));
+            }
+            if (extras.containsKey("height")) {
+                etHeight.setText(String.valueOf(extras.getDouble("height")));
+            }
+
+        }
     }
 
     @Override
@@ -75,9 +90,15 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
                     progress.setDate(DateUtil.stringDateToLong(etDate.getText().toString()));
                     String babyId = sharedPreferences.getString("selectedBabyIdFs", null);
                     progress.setBabyId(babyId);
-                    viewModel.add(progress);
+
+                    // Set ID if editing
+                    String progressId = getIntent().getStringExtra("progress_id");
+                    if (progressId != null) {
+                        progress.setIdFs(progressId);
+                    }
+
+                    viewModel.save(progress);
                     Toast.makeText(GrowthActivity.this, "Saved", Toast.LENGTH_SHORT).show();
-                    finish();
                 }
             }
         });
