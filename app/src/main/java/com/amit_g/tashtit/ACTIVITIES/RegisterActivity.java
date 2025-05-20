@@ -62,7 +62,7 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
                 user.setUserName(etUserName.getText().toString());
                 user.setEmail(etEmail.getText().toString());
                 user.setPassword(etPassword.getText().toString());
-                user.setNotifications(cbNotification.isChecked());
+                //user.setNotifications(cbNotification.isChecked());
 
                 if (oldUser != null) {
                     user.setIdFs(oldUser.getIdFs());

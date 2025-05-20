@@ -94,7 +94,7 @@ public class AllActivitiesActivity extends BaseActivity {
         navList.add(new btnNevigation("Home",HomeActivity.class));
         navList.add(new btnNevigation("Measurements", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
-        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
+        navList.add(new btnNevigation("Add Baby", ActivityBabySign.class));
         navList.add(new btnNevigation("Connect To Baby", ConnectToBabyActivity.class));
         navList.add(new btnNevigation("Log Out", LoginActivity.class));
         setRecyclerView2(navList);

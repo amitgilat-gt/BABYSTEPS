@@ -102,7 +102,7 @@ public class HomeActivity extends BaseActivity {
         navList.add(new btnNevigation("Measurements", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
-        navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
+        navList.add(new btnNevigation("Add Baby", ActivityBabySign.class));
         navList.add(new btnNevigation("Connect To Baby", ConnectToBabyActivity.class));
         navList.add(new btnNevigation("Log Out", LoginActivity.class));
 
@@ -286,6 +286,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setViewModel();
         String selectedBabyIdFs = sharedPreferences.getString("selectedBabyIdFs", null);
         if (selectedBabyIdFs != null) {
             fetchAndDisplayLatestActivity(selectedBabyIdFs);
@@ -294,7 +295,7 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void updateSpinnerWithNoData() {
-        List<String> emptyList = Collections.singletonList("No babies connected");
+        List<String> emptyList = Collections.singletonList("No babies enrolled");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
