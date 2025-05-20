@@ -114,6 +114,7 @@ public class GalleryActivity extends BaseActivity {
                         gallery.setDate(System.currentTimeMillis());
                         gallery.setBabyId(getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null));
                         viewModel.add(gallery);
+                        setViewModel();
                     } else {
                         Toast.makeText(this, "Failed to take picture", Toast.LENGTH_SHORT).show();
                     }
@@ -133,6 +134,7 @@ public class GalleryActivity extends BaseActivity {
                             gallery.setDate(System.currentTimeMillis());
 
                             viewModel.add(gallery);
+                            setViewModel();
                         } catch (Exception e) {
                             Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
                         }
