@@ -85,22 +85,53 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <!-- Title for Last Activity -->
+    <TextView
+        android:id="@+id/tvLastActivityTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Latest Activity"
+        android:textColor="#5C6BC0"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/clBabySp" />
+
+    <!-- Include the Last Activity Layout -->
     <include
         android:id="@+id/lastActivitySection"
         layout="@layout/single_activity_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/clBabySp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLastActivityTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Title for Last Progress -->
+    <TextView
+        android:id="@+id/tvLastProgressTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Latest Measurements"
+        android:textColor="#5C6BC0"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/lastActivitySection"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Include the Last Progress Layout -->
     <include
         android:id="@+id/lastProgressSection"
         layout="@layout/single_progress_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/lastActivitySection"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLastProgressTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
