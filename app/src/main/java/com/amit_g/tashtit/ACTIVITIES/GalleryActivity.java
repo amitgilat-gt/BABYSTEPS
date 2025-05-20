@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -174,11 +175,11 @@ public class GalleryActivity extends BaseActivity {
 
     private void setupGalleryMenu() {
         btnNevigations navList = new btnNevigations();
-        navList.add(new btnNevigation("Gallery", GalleryActivity.class));
+        navList.add(new btnNevigation("Home", HomeActivity.class));
         navList.add(new btnNevigation("Measurements", ProgressActivity.class));
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
-        navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
+        navList.add(new btnNevigation("Connect To Baby", ConnectToBabyActivity.class));
         navList.add(new btnNevigation("Log Out", LoginActivity.class));
 
         menuAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
@@ -188,9 +189,27 @@ public class GalleryActivity extends BaseActivity {
             button.setText(item.getLabel());
 
             button.setOnClickListener(v -> {
-
-                startActivity(new Intent(GalleryActivity.this, item.getTargetActivity()));
+                if ("Log Out".equals(item.getLabel())) {
+                    new AlertDialog.Builder(GalleryActivity.this)
+                            .setTitle("Log Out")
+                            .setMessage("Are you sure you want to log out?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                        .edit()
+                                        .clear()
+                                        .apply();
+                                Intent intent = new Intent(GalleryActivity.this, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finishAffinity();
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                } else {
+                    startActivity(new Intent(GalleryActivity.this, item.getTargetActivity()));
+                }
             });
+
         });
 
         rvGalleryMenu.setAdapter(menuAdapter);

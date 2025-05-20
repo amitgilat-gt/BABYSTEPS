@@ -105,7 +105,7 @@ public class ProgressActivity extends BaseActivity {
         btnPercentileGenerator = findViewById(R.id.btnGeneratePercentile);
         tvPercentileResult = findViewById(R.id.tvPercentileResult);
         btnNevigations navList = new btnNevigations();
-        navList.add(new btnNevigation("Measurements", ProgressActivity.class));
+        navList.add(new btnNevigation("Home", HomeActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
@@ -121,8 +121,28 @@ public class ProgressActivity extends BaseActivity {
             TextView button = (TextView) holder.getView("btnNev");
             button.setText(item.getLabel());
             button.setOnClickListener(v -> {
-                startActivity(new Intent(ProgressActivity.this, item.getTargetActivity()));
+                if ("Log Out".equals(item.getLabel())) {
+                    new AlertDialog.Builder(ProgressActivity.this)
+                            .setTitle("Log Out")
+                            .setMessage("Are you sure you want to log out?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                        .edit()
+                                        .clear()
+                                        .apply();
+                                Intent intent = new Intent(ProgressActivity.this, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finishAffinity();
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                } else {
+                    // Normal navigation
+                    startActivity(new Intent(ProgressActivity.this, item.getTargetActivity()));
+                }
             });
+
         });
         rvMenuProgress.setAdapter(nevAdapter);
         rvMenuProgress.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

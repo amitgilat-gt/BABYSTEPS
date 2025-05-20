@@ -103,7 +103,7 @@ public class HomeActivity extends BaseActivity {
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
-        navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
+        navList.add(new btnNevigation("Connect To Baby", ConnectToBabyActivity.class));
         navList.add(new btnNevigation("Log Out", LoginActivity.class));
 
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
@@ -129,9 +129,10 @@ public class HomeActivity extends BaseActivity {
                             .setMessage("Are you sure you want to log out?")
                             .setPositiveButton("Yes", (dialog, which) -> {
                                 sharedPreferences.edit().clear().apply();
-                                Intent intent = new Intent(HomeActivity.this, item.getTargetActivity()); // or Splash/Login activity
+                                Intent intent = new Intent(HomeActivity.this, item.getTargetActivity());
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
+                                finishAffinity();
                             })
                             .setNegativeButton("Cancel", null)
                             .show();

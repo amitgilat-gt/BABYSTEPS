@@ -54,16 +54,15 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_baby_sign);  // Ensure layout is set first
+        setContentView(R.layout.activity_baby_sign);
 
-        initializeViews();  // Then initialize views
-        setSpinner();       // Then set the spinner adapter
-        setViewModel();     // Finally, set the ViewModel
-        setValidation();;   // Ensure validation rules are set here
+        initializeViews();
+        setSpinner();
+        setViewModel();
+        setValidation();;
     }
 
     private void setSpinner() {
-        // Make sure spGender is initialized before using it
         if (spGender == null) {
             spGender = findViewById(R.id.spGender);
         }

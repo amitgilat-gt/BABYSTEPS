@@ -91,11 +91,11 @@ public class AllActivitiesActivity extends BaseActivity {
         menuRecyclerView = findViewById(R.id.rvMenuProgress);
         btnNevigations navList = new btnNevigations();
 
-        navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
+        navList.add(new btnNevigation("Home",HomeActivity.class));
         navList.add(new btnNevigation("Measurements", ProgressActivity.class));
         navList.add(new btnNevigation("Gallery", GalleryActivity.class));
         navList.add(new btnNevigation("Baby Sign", ActivityBabySign.class));
-        navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
+        navList.add(new btnNevigation("Connect To Baby", ConnectToBabyActivity.class));
         navList.add(new btnNevigation("Log Out", LoginActivity.class));
         setRecyclerView2(navList);
     }
@@ -132,8 +132,27 @@ public class AllActivitiesActivity extends BaseActivity {
             button.setText(item.getLabel());
 
             button.setOnClickListener(v -> {
-                startActivity(new Intent(AllActivitiesActivity.this, item.getTargetActivity()));
+                if ("Log Out".equals(item.getLabel())) {
+                    new AlertDialog.Builder(AllActivitiesActivity.this)
+                            .setTitle("Log Out")
+                            .setMessage("Are you sure you want to log out?")
+                            .setPositiveButton("Yes", (dialog, which) -> {
+                                getSharedPreferences("UserPrefs", MODE_PRIVATE)
+                                        .edit()
+                                        .clear()
+                                        .apply();
+                                Intent intent = new Intent(AllActivitiesActivity.this, LoginActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                                finishAffinity();
+                            })
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                } else {
+                    startActivity(new Intent(AllActivitiesActivity.this, item.getTargetActivity()));
+                }
             });
+
         });
 
         menuRecyclerView.setAdapter(menuAdapter);
