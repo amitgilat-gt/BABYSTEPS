@@ -108,24 +108,13 @@ public abstract class BaseViewModel<TEntity extends BaseEntity, TCollection exte
     }
 
     public void save(TEntity entity, String pictureFieldName, String pictureUrlFieldName) {
-        repository.exist(entity)
-                .addOnSuccessListener(new OnSuccessListener<Boolean>() {
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                        if (StringUtil.isNullOrEmpty(entity.getIdFs()) || !aBoolean) {
-                            add(entity, pictureFieldName, pictureUrlFieldName);
-                        } else {
-                            update(entity, pictureFieldName, pictureUrlFieldName);
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Exist fail");
-                    }
-                });
+        if (StringUtil.isNullOrEmpty(entity.getIdFs())) {
+            add(entity, pictureFieldName, pictureUrlFieldName);
+        } else {
+            update(entity, pictureFieldName, pictureUrlFieldName);
+        }
     }
+
     //endregion
 
     //region ADD
