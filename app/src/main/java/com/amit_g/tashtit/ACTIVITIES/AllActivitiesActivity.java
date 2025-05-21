@@ -123,6 +123,7 @@ public class AllActivitiesActivity extends BaseActivity {
                         .setMessage("Are you sure you want to delete this activity?")
                         .setPositiveButton("Yes", (dialog, which) -> {
                             viewModel.delete(item);
+                            setViewModel();
                             navigateToActivity(AllActivitiesActivity.class);
                         })
                         .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())

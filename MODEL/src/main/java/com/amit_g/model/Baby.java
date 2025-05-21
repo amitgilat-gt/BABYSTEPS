@@ -22,6 +22,11 @@ public class Baby extends BaseEntity implements Serializable {
         Password = password;
     }
 
+    public Baby(String name, long birthDate) {
+        this.name = name;
+        this.birthDate = birthDate;
+    }
+
     public void setId(String id) {
         this.idB = id;
     }
@@ -38,11 +43,6 @@ public class Baby extends BaseEntity implements Serializable {
 
     public void setPassword(String password) {
         Password = password;
-    }
-
-    public Baby(String name, long birthDate) {
-        this.name = name;
-        this.birthDate = birthDate;
     }
 
     public Gender getGender() {

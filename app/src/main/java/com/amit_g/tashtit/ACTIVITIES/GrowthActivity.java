@@ -94,7 +94,10 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
                     String babyId = sharedPreferences.getString("selectedBabyIdFs", null);
                     progress.setBabyId(babyId);
 
-                    viewModel.save(progress); // will either add or update
+                    if(btnPut.getText().equals("Update"))
+                        viewModel.update(progress);// will either add or update
+                    else
+                        viewModel.add(progress);
                     Toast.makeText(GrowthActivity.this, "Saved", Toast.LENGTH_SHORT).show();
                     finish();
                 }
