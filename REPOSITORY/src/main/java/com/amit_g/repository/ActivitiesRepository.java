@@ -13,7 +13,6 @@ public class ActivitiesRepository extends BaseRepository<LastActivity, LastActiv
         super(LastActivity.class, LastActivities.class, application);
     }
 
-
     @Override
     protected Query getQueryForExist(LastActivity entity) {
         return getCollection().whereEqualTo("babyId", entity.getBabyId());
