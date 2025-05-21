@@ -8,16 +8,15 @@ public class User extends BaseEntity {
     private String userName;
     private String Password;
     private String Email;
-    private boolean NotificationEnabled;
+
 
     public User() {
     }
 
-    public User(String userName, String password, String email, boolean notificationEnabled) {
+    public User(String userName, String password, String email) {
         this.userName = userName;
         Password = password;
         Email = email;
-        NotificationEnabled = notificationEnabled;
     }
 
     public String getUserName() {
@@ -44,20 +43,13 @@ public class User extends BaseEntity {
         Email = email;
     }
 
-    public boolean isNotificationEnabled() {
-        return NotificationEnabled;
-    }
-
-    public void setNotifications(boolean notificationEnabled) {
-        NotificationEnabled = notificationEnabled;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         User user = (User) o;
-        return NotificationEnabled == user.NotificationEnabled && Objects.equals(userName, user.userName) && Objects.equals(Password, user.Password) && Objects.equals(Email, user.Email);
+        return Objects.equals(userName, user.userName) && Objects.equals(Password, user.Password) && Objects.equals(Email, user.Email);
     }
 
 }
