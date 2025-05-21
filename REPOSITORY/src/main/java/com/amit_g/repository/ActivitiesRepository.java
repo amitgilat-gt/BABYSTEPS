@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.amit_g.model.LastActivities;
 import com.amit_g.model.LastActivity;
-import com.amit_g.model.Note;
 import com.amit_g.repository.BASE.BaseRepository;
 import com.google.firebase.firestore.Query;
 
