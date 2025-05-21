@@ -32,6 +32,8 @@ import java.time.LocalTime;
 import java.util.Collections;
 
 public class AllActivitiesActivity extends BaseActivity {
+
+    // UI components and adapter/view model references
     private RecyclerView rvActivities;
     private FloatingActionButton fabAddActivity;
     private ActivityViewModel viewModel;
@@ -40,6 +42,7 @@ public class AllActivitiesActivity extends BaseActivity {
     private NevigationAdapter menuAdapter;
     private String babyId;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,9 +57,9 @@ public class AllActivitiesActivity extends BaseActivity {
         setRecyclerView();
         setViewModel();
         setListeners();
-
     }
 
+    // Sets up the main RecyclerView with activities data
     @SuppressLint("NewApi")
     private void setRecyclerView() {
         adapter = new ActivitiesAdapter(null, R.layout.single_activity_layout, holder -> {
@@ -81,7 +84,7 @@ public class AllActivitiesActivity extends BaseActivity {
         rvActivities.setLayoutManager(new LinearLayoutManager(this));
     }
 
-
+    // Initializes views and navigation buttons
     @Override
     protected void initializeViews() {
         rvActivities = findViewById(R.id.rvProgress);
@@ -89,15 +92,17 @@ public class AllActivitiesActivity extends BaseActivity {
         menuRecyclerView = findViewById(R.id.rvMenuProgress);
         btnNavigations navList = new btnNavigations();
 
-        navList.add(new btnNavigation("Home",HomeActivity.class));
+        navList.add(new btnNavigation("Home", HomeActivity.class));
         navList.add(new btnNavigation("Measurements", ProgressActivity.class));
         navList.add(new btnNavigation("Gallery", GalleryActivity.class));
         navList.add(new btnNavigation("Add Baby", ActivityBabySign.class));
         navList.add(new btnNavigation("Connect To Baby", ConnectToBabyActivity.class));
         navList.add(new btnNavigation("Log Out", LoginActivity.class));
+
         setRecyclerView2(navList);
     }
 
+    // Sets up click listeners for adding, editing, and deleting activities
     @Override
     protected void setListeners() {
         fabAddActivity.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +111,7 @@ public class AllActivitiesActivity extends BaseActivity {
                 navigateToActivity(ActivitiesActivity.class);
             }
         });
+
         adapter.setOnItemClickListener(new GenericAdapter.OnItemClickListener<LastActivity>() {
             @Override
             public void onItemClick(LastActivity item, int position) {
@@ -118,7 +124,7 @@ public class AllActivitiesActivity extends BaseActivity {
         adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<LastActivity>() {
             @Override
             public boolean onItemLongClick(LastActivity item, int position) {
-                new AlertDialog.Builder(AllActivitiesActivity.this) // Replace `context` with your Activity or Fragment context
+                new AlertDialog.Builder(AllActivitiesActivity.this)
                         .setTitle("Delete Entry")
                         .setMessage("Are you sure you want to delete this activity?")
                         .setPositiveButton("Yes", (dialog, which) -> {
@@ -132,6 +138,8 @@ public class AllActivitiesActivity extends BaseActivity {
             }
         });
     }
+
+    // Sets up the horizontal navigation menu
     protected void setRecyclerView2(btnNavigations navList) {
         menuAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
             holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
@@ -160,13 +168,13 @@ public class AllActivitiesActivity extends BaseActivity {
                     startActivity(new Intent(AllActivitiesActivity.this, item.getTargetActivity()));
                 }
             });
-
         });
 
         menuRecyclerView.setAdapter(menuAdapter);
         menuRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
+    // Initializes ViewModel and loads activity data for current baby
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
@@ -179,6 +187,8 @@ public class AllActivitiesActivity extends BaseActivity {
             }
         });
     }
+
+    // Refreshes data when returning to activity
     @Override
     protected void onResume() {
         super.onResume();

@@ -30,6 +30,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class GrowthActivity extends BaseActivity implements EntryValidation {
+
+    // UI components and view model
     private EditText etHeight;
     private EditText etWeight;
     private EditText etDate;
@@ -39,6 +41,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
     private SharedPreferences sharedPreferences;
     private Progress progress;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +54,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         setViewModel();
     }
 
+    // Initializes all views and handles pre-filled data if editing an entry
     @Override
     protected void initializeViews() {
         etHeight = findViewById(R.id.etHeight);
@@ -58,30 +62,28 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         etDate = findViewById(R.id.etDate);
         btnPut = findViewById(R.id.btnPut);
         btnCancelSt = findViewById(R.id.btnCancelSt);
-
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
 
-        // Set current date by default
+        // Set today's date by default
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             etDate.setText(LocalDate.now().format(formatter));
         }
 
-        // Handle edit case
+        // Load existing progress if passed for editing
         Progress passedProgress = (Progress) getIntent().getSerializableExtra("progress");
         if (passedProgress != null) {
             btnPut.setText("Update");
             etHeight.setText(String.valueOf(passedProgress.getHeight()));
             etWeight.setText(String.valueOf(passedProgress.getWeight()));
             etDate.setText(DateUtil.longDateToString(passedProgress.getDate()));
-
             progress = passedProgress;
         } else {
-            progress = new Progress(); // fresh one
+            progress = new Progress();
         }
     }
 
-
+    // Sets listeners for save and cancel buttons
     @Override
     protected void setListeners() {
         btnPut.setOnClickListener(new View.OnClickListener() {
@@ -95,9 +97,10 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
                     progress.setBabyId(babyId);
 
                     if(btnPut.getText().equals("Update"))
-                        viewModel.update(progress);// will either add or update
+                        viewModel.update(progress);
                     else
                         viewModel.add(progress);
+
                     Toast.makeText(GrowthActivity.this, "Saved", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -107,30 +110,30 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         btnCancelSt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Close the activity without saving
                 finish();
             }
         });
     }
 
+    // Initializes the view model for handling growth entries
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ProgressViewModel.class);
     }
 
+    // Sets validation rules for height, weight, and date
     @Override
     public void setValidation() {
-        // Validate height and weight as decimal numbers
         Validator.add(new TextRule(etHeight, RuleOperation.REQUIRED, "Height is required"));
-
         Validator.add(new TextRule(etWeight, RuleOperation.REQUIRED, "Weight is required"));
-
-        // Validate date as a date
         Validator.add(new TextRule(etDate, RuleOperation.REQUIRED, "Date is required"));
     }
 
-
+    // Triggers the validation check for all fields
     @Override
     public boolean validate() {
         return Validator.validate();
     }
 }
+

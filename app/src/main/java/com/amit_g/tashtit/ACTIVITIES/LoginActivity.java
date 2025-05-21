@@ -21,12 +21,15 @@ import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.UsersViewModel;
 
 public class LoginActivity extends BaseActivity {
+
+    // UI components and view model
     private Button btnLogin;
     private EditText etEmail;
     private EditText etPassword;
     private TextView tvRegister;
     private UsersViewModel viewModel;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +45,7 @@ public class LoginActivity extends BaseActivity {
         setListeners();
     }
 
+    // Initializes view elements from layout
     @Override
     protected void initializeViews() {
         btnLogin   = findViewById(R.id.btnLogin);
@@ -50,6 +54,7 @@ public class LoginActivity extends BaseActivity {
         etPassword = findViewById(R.id.etPasswordB);
     }
 
+    // Sets click listeners for login and register actions
     @Override
     protected void setListeners() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +62,8 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 String username = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
+
+                // Attempt login via ViewModel
                 viewModel.loginUser(username, password)
                         .addOnSuccessListener(querySnapshot -> {
                             if (!querySnapshot.isEmpty()) {
@@ -70,9 +77,9 @@ public class LoginActivity extends BaseActivity {
                         .addOnFailureListener(e -> {
                             // ⚠️ Handle error
                         });
-
             }
         });
+
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,21 +87,21 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
+
+    // Saves logged in user data to shared preferences
     private void saveUserToPreferences(User user) {
         SharedPreferences sharedPref = getApplicationContext()
                 .getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString("userIdFs", user.getIdFs());
         editor.putString("username", user.getUserName());
-        editor.putString("email", user.getEmail()); // if needed
-        // Add other fields as needed
+        editor.putString("email", user.getEmail());
         editor.apply();
     }
 
-
+    // Initializes the ViewModel
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(UsersViewModel.class);
-
     }
 }

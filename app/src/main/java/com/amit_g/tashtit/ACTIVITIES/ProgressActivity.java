@@ -47,6 +47,7 @@ import retrofit2.Response;
 
 public class ProgressActivity extends BaseActivity {
 
+    // UI components and ViewModels
     private RecyclerView rvProgress;
     private FloatingActionButton fabAddProgress;
     private ProgressAdapter adapter;
@@ -59,8 +60,7 @@ public class ProgressActivity extends BaseActivity {
     private String babyId;
     private TextView tvPercentileResult;
 
-
-
+    // Called when activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +77,7 @@ public class ProgressActivity extends BaseActivity {
         setListeners();
     }
 
+    // Initializes RecyclerView for growth records
     private void setRecyclerView() {
         adapter = new ProgressAdapter(null, R.layout.single_progress_layout,holder -> {
             holder.putView("date", holder.itemView.findViewById(R.id.tvDate));
@@ -89,10 +90,9 @@ public class ProgressActivity extends BaseActivity {
         });
         rvProgress.setAdapter(adapter);
         rvProgress.setLayoutManager(new LinearLayoutManager(this));
-
-
     }
 
+    // Initializes views and navigation buttons
     @Override
     protected void initializeViews() {
         rvProgress = findViewById(R.id.rvProgress);
@@ -110,6 +110,7 @@ public class ProgressActivity extends BaseActivity {
         setRecyclerView2(navList);
     }
 
+    // Sets up horizontal navigation menu
     private void setRecyclerView2(btnNavigations navList) {
         nevAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
             holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
@@ -134,74 +135,58 @@ public class ProgressActivity extends BaseActivity {
                             .setNegativeButton("Cancel", null)
                             .show();
                 } else {
-                    // Normal navigation
                     startActivity(new Intent(ProgressActivity.this, item.getTargetActivity()));
                 }
             });
-
         });
         rvMenuProgress.setAdapter(nevAdapter);
         rvMenuProgress.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-
     }
 
+    // Sets listeners for FAB, percentile generator, and adapter items
     @Override
     protected void setListeners() {
-        fabAddProgress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navigateToActivity(GrowthActivity.class);
-            }
-        });
-        btnPercentileGenerator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (latestProgress != null) {
-                    new AlertDialog.Builder(ProgressActivity.this)
-                            .setTitle("Generate Percentile")
-                            .setMessage("This process might take a while. Are you sure you want to continue?")
-                            .setPositiveButton("Yes", (dialog, which) -> {
-                                calculatePercentiles(latestProgress);
-                                showProgressDialog("Generating Percentile", "Please wait...");
-                                dialog.dismiss();
-                            })
-                            .setNegativeButton("No", (dialog, which) -> {
-                                dialog.dismiss();
-                            })
-                            .show();
-                } else {
-                    Log.e("Percentile", "No progress data available.");
-                }
-            }
-        });
-        adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<Progress>() {
-            @Override
-            public boolean onItemLongClick(Progress item, int position) {
+        fabAddProgress.setOnClickListener(v -> navigateToActivity(GrowthActivity.class));
+
+        btnPercentileGenerator.setOnClickListener(v -> {
+            if (latestProgress != null) {
                 new AlertDialog.Builder(ProgressActivity.this)
-                        .setTitle("Delete Measurement")
-                        .setMessage("Are you sure you want to delete this measurement?")
+                        .setTitle("Generate Percentile")
+                        .setMessage("This process might take a while. Are you sure you want to continue?")
                         .setPositiveButton("Yes", (dialog, which) -> {
-                            viewModel.delete(item);
-                            setViewModel();
+                            calculatePercentiles(latestProgress);
+                            showProgressDialog("Generating Percentile", "Please wait...");
+                            dialog.dismiss();
                         })
-                        .setNegativeButton("Cancel", null)
+                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                         .show();
-                return true;
-            }
-        });
-        adapter.setOnItemClickListener(new GenericAdapter.OnItemClickListener<Progress>() {
-            @Override
-            public void onItemClick(Progress item, int position) {
-                Intent intent = new Intent(ProgressActivity.this, GrowthActivity.class);
-                intent.putExtra("progress", item); // must implement Serializable
-                startActivity(intent);
-                setViewModel();
+            } else {
+                Log.e("Percentile", "No progress data available.");
             }
         });
 
+        adapter.setOnItemLongClickListener((item, position) -> {
+            new AlertDialog.Builder(ProgressActivity.this)
+                    .setTitle("Delete Measurement")
+                    .setMessage("Are you sure you want to delete this measurement?")
+                    .setPositiveButton("Yes", (dialog, which) -> {
+                        viewModel.delete(item);
+                        setViewModel();
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+            return true;
+        });
 
+        adapter.setOnItemClickListener((item, position) -> {
+            Intent intent = new Intent(ProgressActivity.this, GrowthActivity.class);
+            intent.putExtra("progress", item);
+            startActivity(intent);
+            setViewModel();
+        });
     }
 
+    // Initializes ViewModels and fetches progress data for the selected baby
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ProgressViewModel.class);
@@ -214,19 +199,20 @@ public class ProgressActivity extends BaseActivity {
                     Collections.sort(progresses, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                     adapter.setItems(progresses);
                     adapter.notifyDataSetChanged();
-
-                    latestProgress = progresses.get(0); // Save the most recent progress
+                    latestProgress = progresses.get(0);
                 }
             });
         }
     }
+
+    // Refreshes data when returning to activity
     @Override
     protected void onResume() {
         super.onResume();
         setViewModel();
     }
 
-
+    // Sends request to calculate height/weight percentiles via external API
     private void calculatePercentiles(Progress progress) {
         if (babyId == null) {
             Log.e("Percentile", "Baby ID is null");
@@ -245,54 +231,33 @@ public class ProgressActivity extends BaseActivity {
                 return;
             }
 
-            String babyGender = baby.getGender().toString();
             int babyAgeMonths = DateUtil.getAgeInMonths(baby.getBirthDate(), progress.getDate());
-
-            String promptText = "A baby " + (babyGender.equalsIgnoreCase("MALE") ? "boy" : "girl") + " is " +
-                    babyAgeMonths + " months old, weighs " + progress.getWeight() +
+            String promptText = "A baby " + (baby.getGender().toString().equalsIgnoreCase("MALE") ? "boy" : "girl") +
+                    " is " + babyAgeMonths + " months old, weighs " + progress.getWeight() +
                     " kg and is " + progress.getHeight() +
                     " cm tall. What are his/her height and weight percentiles? Please respond in JSON with keys: height_percentile and weight_percentile.";
 
-            List<R1Request.Message> messages = Collections.singletonList(
-                    new R1Request.Message("user", promptText)
-            );
-
+            List<R1Request.Message> messages = Collections.singletonList(new R1Request.Message("user", promptText));
             R1Request request = new R1Request("deepseek/deepseek-r1:free", messages);
-            Log.d("API_REQUEST_JSON", new Gson().toJson(request));
-
             OpenRouterApi api = RetrofitClient.getInstance().create(OpenRouterApi.class);
+
             api.getPercentile(request).enqueue(new Callback<R1Response>() {
                 @Override
                 public void onResponse(Call<R1Response> call, Response<R1Response> response) {
                     hideProgressDialog();
                     if (!response.isSuccessful()) {
                         Log.e("Percentile", "Unsuccessful response: " + response.code());
-                        try {
-                            if (response.errorBody() != null) {
-                                Log.e("Percentile", "Error body: " + response.errorBody().string());
-                            }
-                        } catch (Exception e) {
-                            Log.e("Percentile", "Error reading error body", e);
-                        }
                         runOnUiThread(() -> tvPercentileResult.setText("Failed to get response from model."));
                         return;
                     }
 
                     R1Response r1Response = response.body();
                     if (r1Response == null || r1Response.getChoices() == null || r1Response.getChoices().isEmpty()) {
-                        Log.e("Percentile", "Empty or null response body or choices");
                         runOnUiThread(() -> tvPercentileResult.setText("Model returned no useful data."));
                         return;
                     }
 
                     String modelReply = r1Response.getChoices().get(0).getMessage().getContent();
-                    if (modelReply == null || modelReply.trim().isEmpty()) {
-                        Log.e("Percentile", "Model reply is empty");
-                        runOnUiThread(() -> tvPercentileResult.setText("Empty response from model."));
-                        return;
-                    }
-
-                    Log.d("ModelReply", modelReply);
                     modelReply = modelReply.replaceAll("(?s)```(?:json)?\\s*", "").replaceAll("```", "").trim();
 
                     try {
@@ -300,16 +265,11 @@ public class ProgressActivity extends BaseActivity {
                         String heightPercentile = json.optString("height_percentile", "N/A");
                         String weightPercentile = json.optString("weight_percentile", "N/A");
 
-                        Log.d("Percentile", "Height: " + heightPercentile + ", Weight: " + weightPercentile);
-
-                        runOnUiThread(() -> {
-                            tvPercentileResult.setText(
-                                    "Height Percentile: " + heightPercentile + "\n" +
-                                            "Weight Percentile: " + weightPercentile
-                            );
-                        });
+                        runOnUiThread(() -> tvPercentileResult.setText(
+                                "Height Percentile: " + heightPercentile + "\n" +
+                                        "Weight Percentile: " + weightPercentile
+                        ));
                     } catch (JSONException e) {
-                        Log.e("Percentile", "Failed to parse JSON from model: " + modelReply);
                         runOnUiThread(() -> tvPercentileResult.setText("Could not parse response as JSON."));
                     }
                 }
@@ -321,14 +281,6 @@ public class ProgressActivity extends BaseActivity {
                 }
             });
 
-        }).addOnFailureListener(e -> {
-            Log.e("Percentile", "Error fetching baby data", e);
-        });
+        }).addOnFailureListener(e -> Log.e("Percentile", "Error fetching baby data", e));
     }
-
-
-
-
-
-
 }

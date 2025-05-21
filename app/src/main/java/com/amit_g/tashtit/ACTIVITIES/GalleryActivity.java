@@ -38,11 +38,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class GalleryActivity extends BaseActivity {
+
+    // Handles photo addition from camera/gallery, deletion, and navigation menu
     private ExtendedFloatingActionButton fabAddPhoto;
     private RecyclerView rvGallery;
     private GalleryViewModel viewModel;
     private GalleryAdapter adapter;
-    private ActivityResultLauncher<Void>   cameraLauncher;
+    private ActivityResultLauncher<Void> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private Gallery gallery;
@@ -51,6 +53,7 @@ public class GalleryActivity extends BaseActivity {
     private RecyclerView rvGalleryMenu;
     private NevigationAdapter menuAdapter;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +66,7 @@ public class GalleryActivity extends BaseActivity {
         setListeners();
     }
 
+    // Initializes views from the layout
     @Override
     protected void initializeViews() {
         fabAddPhoto = findViewById(R.id.fabAddPhoto);
@@ -71,6 +75,7 @@ public class GalleryActivity extends BaseActivity {
         setupGalleryMenu();
     }
 
+    // Sets click listeners for adding and deleting gallery photos
     @Override
     protected void setListeners() {
         fabAddPhoto.setOnClickListener(new View.OnClickListener() {
@@ -96,13 +101,14 @@ public class GalleryActivity extends BaseActivity {
             }
         });
     }
+
+    // Initializes launchers for camera, gallery, and permission requests
     private void setLaunchers() {
         cameraLauncher = registerForActivityResult(
                 new ActivityResultContracts.TakePicturePreview(),
                 bitMap -> {
                     if (bitMap != null) {
                         bitmapPhoto = bitMap;
-
                         Gallery gallery = new Gallery();
                         gallery.setPicture(BitMapHelper.bitmapToString(bitmapPhoto));
                         gallery.setDate(System.currentTimeMillis());
@@ -114,7 +120,6 @@ public class GalleryActivity extends BaseActivity {
                     }
                 });
 
-
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -122,11 +127,9 @@ public class GalleryActivity extends BaseActivity {
                         final Uri imageUri = result.getData().getData();
                         try {
                             bitmapPhoto = BitMapHelper.uriToBitmap(imageUri, GalleryActivity.this);
-
                             gallery = new Gallery();
                             gallery.setPicture(BitMapHelper.bitmapToString(bitmapPhoto));
                             gallery.setDate(System.currentTimeMillis());
-
                             viewModel.add(gallery);
                             setViewModel();
                         } catch (Exception e) {
@@ -139,7 +142,6 @@ public class GalleryActivity extends BaseActivity {
                 new ActivityResultContracts.RequestPermission(),
                 isGranted -> {
                     if (isGranted) {
-                        // Launch appropriate action based on currentRequestType
                         if (Global.getCurrentRequestType() == 0) {
                             cameraLauncher.launch(null);
                         } else {
@@ -153,12 +155,12 @@ public class GalleryActivity extends BaseActivity {
                 });
     }
 
-    protected void setRecyclerView(){
+    // Sets up the gallery RecyclerView
+    protected void setRecyclerView() {
         adapter = new GalleryAdapter(null, R.layout.single_gallery_layout, holder -> {
             holder.putView("picture",holder.itemView.findViewById(R.id.imgBabyGallery));
             holder.putView("date",holder.itemView.findViewById(R.id.tvImageDate));
-        }
-                ,((holder, item, position) -> {
+        }, ((holder, item, position) -> {
             ((ImageView)holder.getView("picture")).setImageBitmap(BitMapHelper.stringToBitmap(item.getPicture()));
             ((TextView)holder.getView("date")).setText(DateUtil.longDateToString(item.getDate()));
         }));
@@ -166,6 +168,7 @@ public class GalleryActivity extends BaseActivity {
         rvGallery.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    // Sets and observes data from the ViewModel
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(GalleryViewModel.class);
@@ -180,12 +183,14 @@ public class GalleryActivity extends BaseActivity {
         });
     }
 
+    // Refreshes data when returning to activity
     @Override
     protected void onResume() {
         super.onResume();
         setViewModel();
     }
 
+    // Initializes the horizontal navigation menu
     private void setupGalleryMenu() {
         btnNavigations navList = new btnNavigations();
         navList.add(new btnNavigation("Home", HomeActivity.class));
@@ -228,5 +233,4 @@ public class GalleryActivity extends BaseActivity {
         rvGalleryMenu.setAdapter(menuAdapter);
         rvGalleryMenu.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
-
 }

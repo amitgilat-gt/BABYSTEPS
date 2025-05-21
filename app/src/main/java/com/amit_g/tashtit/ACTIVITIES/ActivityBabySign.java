@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityBabySign extends BaseActivity implements EntryValidation {
+
+    // UI components and view models
     private EditText etBabyName;
     private EditText etBirthDate;
     private FloatingActionButton fabPicture;
@@ -50,18 +52,19 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
     private String userId;
     private EditText etId;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_baby_sign);
-
         initializeViews();
         setSpinner();
         setViewModel();
-        setValidation();;
+        setValidation();
     }
 
+    // Initializes gender selection spinner
     private void setSpinner() {
         if (spGender == null) {
             spGender = findViewById(R.id.spGender);
@@ -75,9 +78,10 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genderList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spGender.setAdapter(adapter); // Now spGender is properly initialized
+        spGender.setAdapter(adapter);
     }
 
+    // Initializes view components and retrieves userId from shared preferences
     @Override
     protected void initializeViews() {
         etBabyName = findViewById(R.id.etBabyName);
@@ -88,11 +92,11 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
         etId = findViewById(R.id.etId);
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("userIdFs", null);
-        // Ensure spGender is initialized here
         spGender = findViewById(R.id.spGender);
-        setListeners();  // After all views are initialized, set listeners
+        setListeners();
     }
 
+    // Sets click listener on the sign-up button
     @Override
     protected void setListeners() {
         btnSignBaby.setOnClickListener(new View.OnClickListener() {
@@ -103,55 +107,54 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
                     baby.setName(etBabyName.getText().toString());
                     baby.setBirthDate(DateUtil.stringDateToLong(etBirthDate.getText().toString()));
                     baby.setPassword(etBabyPassword.getText().toString());
-                    // Check for gender selection
+
                     String selectedGender = spGender.getSelectedItem().toString();
                     if (selectedGender.equals("Select Gender")) {
                         Toast.makeText(ActivityBabySign.this, "Please select gender", Toast.LENGTH_SHORT).show();
                         return;
                     }
+
                     baby.setId(etId.getText().toString());
                     Gender gender = Gender.valueOf(selectedGender.toUpperCase());
                     baby.setGender(gender);
                     viewModel.save(baby);
+
                     showProgressDialog("Signing Baby", "Please wait...");
                     new Handler().postDelayed(() -> {
                         UserBaby userBaby = new UserBaby();
                         userBaby.setBabyId(baby.getIdFs());
                         userBaby.setUserId(userId);
                         userBabyViewModel.add(userBaby);
-                        new Handler().postDelayed(() -> {hideProgressDialog();navigateToActivity(HomeActivity.class);}, 1500);
+                        new Handler().postDelayed(() -> {
+                            hideProgressDialog();
+                            navigateToActivity(HomeActivity.class);
+                        }, 1500);
                     }, 1500);
-
                 }
             }
         });
     }
 
+    // Initializes view models
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
         userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
-
     }
 
-
+    // Sets validation rules for baby name and birth date
     @Override
     public void setValidation() {
         Validator.clear();
-
-        // Baby name validations
         Validator.add(new TextRule(etBabyName, RuleOperation.REQUIRED, "Baby's name is required"));
         Validator.add(new NameRule(etBabyName, RuleOperation.NAME, "Baby's name is not valid"));
-
-        // Birthdate validations
         Validator.add(new TextRule(etBirthDate, RuleOperation.REQUIRED, "Birthdate is required"));
     }
 
-
-
-
+    // Validates all fields based on rules defined
     @Override
     public boolean validate() {
         return Validator.validate();
     }
 }
+

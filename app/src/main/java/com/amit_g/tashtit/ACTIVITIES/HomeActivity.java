@@ -40,6 +40,7 @@ import java.util.List;
 
 public class HomeActivity extends BaseActivity {
 
+    // UI components and view models
     private RecyclerView buttonRecyclerView;
     private NevigationAdapter adapter;
     private SharedPreferences sharedPreferences;
@@ -62,7 +63,7 @@ public class HomeActivity extends BaseActivity {
     private TextView progressWeight;
     private TextView progressHeight;
 
-
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,10 +77,11 @@ public class HomeActivity extends BaseActivity {
         });
 
         initializeViews();
-        setViewModel(); // Set up ViewModels
+        setViewModel();
         setListeners();
     }
 
+    // Initializes views and loads user info and navigation buttons
     @Override
     protected void initializeViews() {
         buttonRecyclerView = findViewById(R.id.buttonRecyclerView);
@@ -95,7 +97,6 @@ public class HomeActivity extends BaseActivity {
         progressDate = lastProgressSection.findViewById(R.id.tvDate);
         progressWeight = lastProgressSection.findViewById(R.id.tvWeight);
         progressHeight = lastProgressSection.findViewById(R.id.tvHeight);
-
 
         btnNavigations navList = new btnNavigations();
         navList.add(new btnNavigation("Measurements", ProgressActivity.class));
@@ -113,6 +114,7 @@ public class HomeActivity extends BaseActivity {
         setRecyclerView(navList);
     }
 
+    // Sets up horizontal navigation button list
     protected void setRecyclerView(btnNavigations navList) {
         adapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
             holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
@@ -122,7 +124,6 @@ public class HomeActivity extends BaseActivity {
 
             button.setOnClickListener(v -> {
                 if (item.getTargetActivity().equals(LoginActivity.class)) {
-                    // Show logout confirmation dialog
                     new android.app.AlertDialog.Builder(HomeActivity.this)
                             .setTitle("Log out")
                             .setMessage("Are you sure you want to log out?")
@@ -144,6 +145,7 @@ public class HomeActivity extends BaseActivity {
         buttonRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
+    // Sets listener for baby selection spinner
     @Override
     protected void setListeners() {
         spBaby.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -152,7 +154,6 @@ public class HomeActivity extends BaseActivity {
                 if (position < babyList.size()) {
                     String selectedBabyIdFs = babyList.get(position).getIdFs();
                     sharedPreferences.edit().putString("selectedBabyIdFs", selectedBabyIdFs).apply();
-
                     fetchAndDisplayLatestActivity(selectedBabyIdFs);
                     fetchAndDisplayLatestProgress(selectedBabyIdFs);
                 }
@@ -165,11 +166,11 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-
+    // Loads latest activity data and displays on screen
     private void fetchAndDisplayLatestActivity(String babyIdFs) {
         activityViewModel.getActivitiesForBabyId(babyIdFs).observe(this, activities -> {
             if (activities != null && !activities.isEmpty()) {
-                Collections.sort(activities, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));  // Sort descending by date timestamp
+                Collections.sort(activities, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                 LastActivity latest = activities.get(0);
                 updateActivityUI(latest);
             } else {
@@ -178,7 +179,7 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-
+    // Initializes view models and fetches user/baby data
     @Override
     protected void setViewModel() {
         userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
@@ -190,15 +191,11 @@ public class HomeActivity extends BaseActivity {
             userBabyViewModel.getBabiesForUserId(userId).observe(this, babies -> {
                 if (babies != null && !babies.isEmpty()) {
                     babyList = new ArrayList<>(babies);
-
                     List<String> babyNames = new ArrayList<>();
                     for (Baby baby : babyList) {
                         babyNames.add(baby.getName() != null ? baby.getName() : "Unknown Baby");
                     }
-
                     updateSpinner(babyNames);
-
-                    // Set default selection (e.g. previously selected baby)
                     String savedBabyId = sharedPreferences.getString("selectedBabyIdFs", null);
                     if (savedBabyId != null) {
                         for (int i = 0; i < babyList.size(); i++) {
@@ -227,11 +224,11 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-
+    // Loads and displays the latest progress measurement for the selected baby
     private void fetchAndDisplayLatestProgress(String babyIdFs) {
         progressViewModel.getProgressForBabyId(babyIdFs).observe(this, progressList -> {
             if (progressList != null && !progressList.isEmpty()) {
-                Collections.sort(progressList, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate())); // newest first
+                Collections.sort(progressList, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                 Progress latestProgress = progressList.get(0);
                 updateProgressUI(latestProgress);
             } else {
@@ -240,6 +237,7 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
+    // Updates the progress section UI
     private void updateProgressUI(Progress progress) {
         if (progress != null) {
             progressDate.setText("Date: " + DateUtil.longDateToString(progress.getDate()));
@@ -254,8 +252,7 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-
-    // Separate method to update the UI with activity data
+    // Updates the activity section UI
     private void updateActivityUI(LastActivity lastActivity) {
         if (lastActivity != null) {
             activityType.setText(lastActivity.getAction() != null ? lastActivity.getAction().toString() : "N/A");
@@ -272,6 +269,7 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+    // Populates spinner with baby names
     private void updateSpinner(List<String> babyNames) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -282,6 +280,7 @@ public class HomeActivity extends BaseActivity {
         spBaby.setAdapter(adapter);
     }
 
+    // Called when returning to the activity
     @Override
     protected void onResume() {
         super.onResume();
@@ -293,6 +292,7 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
+    // Sets spinner with default message if no baby data exists
     private void updateSpinnerWithNoData() {
         List<String> emptyList = Collections.singletonList("No babies enrolled");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
@@ -304,3 +304,4 @@ public class HomeActivity extends BaseActivity {
         spBaby.setAdapter(adapter);
     }
 }
+

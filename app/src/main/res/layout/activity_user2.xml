@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#D4E6F1"
-    tools:context=".ACTIVITIES.SignUpActivity">
+    tools:context=".ACTIVITIES.RegisterActivity">
 
     <!-- App Logo -->
     <androidx.cardview.widget.CardView

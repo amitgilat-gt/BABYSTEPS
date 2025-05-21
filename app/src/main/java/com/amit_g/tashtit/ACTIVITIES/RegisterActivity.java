@@ -25,6 +25,7 @@ import com.amit_g.viewmodel.UsersViewModel;
 
 public class RegisterActivity extends BaseActivity implements EntryValidation {
 
+    // UI components and view model
     private EditText etUserName, etPassword, etEmail;
     private Button btnSignUp;
     private CheckBox cbNotification;
@@ -32,6 +33,7 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
     private User oldUser;
     private UsersViewModel viewModel;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,16 +46,18 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
         setListeners();
     }
 
+    // Initializes views from layout
     @Override
     protected void initializeViews() {
         etUserName = findViewById(R.id.etUserName);
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPasswordB);
-        //cbNotification = findViewById(R.id.cbNotification);
+        //cbNotification = findViewById(R.id.cbNotification); // optional checkbox for notifications
         btnSignUp = findViewById(R.id.btnSignUp);
         tvLogin = findViewById(R.id.tvLogin);
     }
 
+    // Sets up button click listeners
     @Override
     protected void setListeners() {
         btnSignUp.setOnClickListener(v -> {
@@ -74,15 +78,16 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
             }
         });
 
-
         tvLogin.setOnClickListener(v -> navigateToActivity(LoginActivity.class));
     }
 
+    // Initializes the ViewModel
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(UsersViewModel.class);
     }
 
+    // Saves user info to SharedPreferences for later use
     private void saveUserToPreferences(User user) {
         SharedPreferences sharedPref = getApplicationContext()
                 .getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
@@ -92,7 +97,7 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
         editor.apply();
     }
 
-
+    // Sets validation rules for user input fields
     @Override
     public void setValidation() {
         Validator.add(new TextRule(etUserName, RuleOperation.REQUIRED, "Username is required"));
@@ -100,10 +105,10 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
         Validator.add(new EmailRule(etEmail, RuleOperation.REQUIRED, "Email is required"));
         Validator.add(new EmailRule(etEmail, RuleOperation.TEXT, "Email is not valid"));
         Validator.add(new PasswordRule(etPassword, RuleOperation.REQUIRED, "Password is required"));
-        // Uncomment below if you have custom PASSWORD rule implemented
-        // Validator.add(new PasswordRule(etPassword, RuleOperation.PASSWORD, "Password is not valid"));
+        // Validator.add(new PasswordRule(etPassword, RuleOperation.PASSWORD, "Password is not valid")); // Optional
     }
 
+    // Validates all input fields
     @Override
     public boolean validate() {
         return Validator.validate();

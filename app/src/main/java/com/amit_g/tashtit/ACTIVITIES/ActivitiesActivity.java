@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActivitiesActivity extends BaseActivity {
+
+    // UI components and model
     private EditText etNote;
     private Spinner actionSpinner;
     private Button btnAddNote;
@@ -45,8 +47,8 @@ public class ActivitiesActivity extends BaseActivity {
     private TextView tvSelectedTime;
     private SharedPreferences sharedPreferences;
     private TextView textView2;
-    //private LocalTime selectedTime;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +66,7 @@ public class ActivitiesActivity extends BaseActivity {
         setListeners();
     }
 
+    // Initializes all view components and handles edit-mode setup if activity is passed
     @Override
     protected void initializeViews() {
         etNote = findViewById(R.id.etNote);
@@ -74,7 +77,7 @@ public class ActivitiesActivity extends BaseActivity {
         tvSelectedTime = findViewById(R.id.tvSelectedTime);
         textView2 = findViewById(R.id.textView2);
 
-        // Get passed activity (if editing)
+        // Load passed activity if exists (edit mode)
         LastActivity passedActivity = (LastActivity) getIntent().getSerializableExtra("activity");
         if (passedActivity != null) {
             activity = passedActivity;
@@ -86,53 +89,49 @@ public class ActivitiesActivity extends BaseActivity {
                 tvSelectedTime.setText(DateUtil.localTimeToString(DateUtil.longToLocalTime(activity.getTime())));
             }
 
-            setSpinner(activity.getAction()); // call AFTER setting views
+            setSpinner(activity.getAction());
         } else {
             activity = new LastActivity();
-            setSpinner(null); // fresh form
+            setSpinner(null);
         }
     }
 
-
+    // Sets click listeners for buttons (select time, save, cancel)
     @Override
     protected void setListeners() {
         btnSelectTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Get current time as default values for the picker
+                // Opens TimePicker dialog and saves selected time to model
                 final Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
 
-                // Create and show the TimePickerDialog
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
                         ActivitiesActivity.this,
                         (view, selectedHour, selectedMinute) -> {
-                            // Format the selected time as HH:mm and set to TextView
                             String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
                             tvSelectedTime.setText(time);
 
-                            // Parse the time string to LocalTime
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 LocalTime selectedTime = LocalTime.of(selectedHour, selectedMinute);
                                 tvSelectedTime.setText(DateUtil.localTimeToString(selectedTime));
                                 activity.setTime(DateUtil.localTimeToLong(selectedTime));
                             }
-
                         },
                         hour,
                         minute,
-                        true // true = 24-hour format, false = AM/PM format
+                        true
                 );
 
                 timePickerDialog.show();
             }
         });
 
-
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Collects input data and saves the activity
                 activity.setDate(System.currentTimeMillis());
                 activity.setDetails(etNote.getText().toString());
                 activity.setAction(Action.valueOf(actionSpinner.getSelectedItem().toString()));
@@ -142,8 +141,6 @@ public class ActivitiesActivity extends BaseActivity {
                     LocalTime parsedTime = LocalTime.parse(tvSelectedTime.getText().toString(), DateTimeFormatter.ofPattern("HH:mm"));
                     activity.setTime(DateUtil.localTimeToLong(parsedTime));
                 }
-
-
                 viewModel.save(activity);
                 new Handler().postDelayed(() -> finish(), 1500);
             }
@@ -152,23 +149,26 @@ public class ActivitiesActivity extends BaseActivity {
         btnCancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Closes the activity without saving
                 finish();
             }
         });
     }
 
-
+    // Initializes the ViewModel
     @Override
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
     }
+
+    // Sets up the spinner with available activity types
     protected void setSpinner(Action selectedAction) {
         if (actionSpinner == null) {
             actionSpinner = findViewById(R.id.spActions);
         }
 
         List<String> typeList = new ArrayList<>();
-        typeList.add("Select activity"); // Placeholder
+        typeList.add("Select activity");
 
         for (Action action : Action.values()) {
             typeList.add(action.name());
@@ -178,16 +178,13 @@ public class ActivitiesActivity extends BaseActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         actionSpinner.setAdapter(adapter);
 
-        // Set selection if editing
         if (selectedAction != null) {
             int index = typeList.indexOf(selectedAction.name());
             if (index >= 0) {
                 actionSpinner.setSelection(index);
             }
         } else {
-            actionSpinner.setSelection(0); // Default to "Select activity"
+            actionSpinner.setSelection(0);
         }
     }
-
-
 }

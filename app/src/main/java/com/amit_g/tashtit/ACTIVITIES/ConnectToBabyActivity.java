@@ -22,6 +22,8 @@ import com.amit_g.viewmodel.BabiesViewModel;
 import com.amit_g.viewmodel.UserBabyViewModel;
 
 public class ConnectToBabyActivity extends BaseActivity {
+
+    // UI elements and view models
     private EditText etIdFs;
     private EditText etPasswordB;
     private Button btnConnect;
@@ -31,6 +33,7 @@ public class ConnectToBabyActivity extends BaseActivity {
     private SharedPreferences sharedPreferences;
     private String userId;
 
+    // Called when the activity is created
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,7 @@ public class ConnectToBabyActivity extends BaseActivity {
         setListeners();
     }
 
+    // Initializes view components and retrieves userId from shared preferences
     @Override
     protected void initializeViews() {
         etIdFs = findViewById(R.id.etIdFs);
@@ -56,6 +60,7 @@ public class ConnectToBabyActivity extends BaseActivity {
         userId = sharedPreferences.getString("userIdFs", null);
     }
 
+    // Sets click listeners for connect and cancel buttons
     @Override
     protected void setListeners() {
         btnConnect.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +68,8 @@ public class ConnectToBabyActivity extends BaseActivity {
             public void onClick(View v) {
                 String id = etIdFs.getText().toString();
                 String password = etPasswordB.getText().toString();
+
+                // Tries to connect to a baby by ID and password
                 babiesViewModel.connectBaby(id, password)
                         .addOnSuccessListener(querySnapshot -> {
                             if (!querySnapshot.isEmpty()) {
@@ -79,17 +86,19 @@ public class ConnectToBabyActivity extends BaseActivity {
                         .addOnFailureListener(e -> {
                             // ⚠️ Handle error
                         });
-
             }
         });
+
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Cancels the connection and closes the activity
                 finish();
             }
         });
     }
 
+    // Initializes the ViewModels used in this activity
     @Override
     protected void setViewModel() {
         babiesViewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
