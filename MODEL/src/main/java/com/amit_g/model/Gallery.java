@@ -51,6 +51,4 @@ public class Gallery extends BaseEntity implements Serializable {
         Gallery gallery = (Gallery) o;
         return date == gallery.date && Objects.equals(babyId, gallery.babyId) && Objects.equals(picture, gallery.picture);
     }
-
-
 }
