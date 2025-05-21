@@ -2,9 +2,10 @@ package com.amit_g.model;
 
 import com.amit_g.model.BASE.BaseEntity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Gallery extends BaseEntity {
+public class Gallery extends BaseEntity implements Serializable {
     private String babyId;
     private long date;
     private String picture;

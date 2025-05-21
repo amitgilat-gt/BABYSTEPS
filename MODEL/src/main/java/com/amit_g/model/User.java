@@ -2,9 +2,10 @@ package com.amit_g.model;
 
 import com.amit_g.model.BASE.BaseEntity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Serializable {
     private String userName;
     private String Password;
     private String Email;
