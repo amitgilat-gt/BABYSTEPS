@@ -12,16 +12,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amit_g.helper.DateUtil;
-import com.amit_g.model.LastActivities;
 import com.amit_g.model.LastActivity;
-import com.amit_g.model.btnNevigation;
-import com.amit_g.model.btnNevigations;
+import com.amit_g.model.btnNavigation;
+import com.amit_g.model.btnNavigations;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
 import com.amit_g.tashtit.ADPTERS.ActivitiesAdapter;
 import com.amit_g.tashtit.ADPTERS.BASE.GenericAdapter;
@@ -89,14 +87,14 @@ public class AllActivitiesActivity extends BaseActivity {
         rvActivities = findViewById(R.id.rvProgress);
         fabAddActivity = findViewById(R.id.fabAddProgress);
         menuRecyclerView = findViewById(R.id.rvMenuProgress);
-        btnNevigations navList = new btnNevigations();
+        btnNavigations navList = new btnNavigations();
 
-        navList.add(new btnNevigation("Home",HomeActivity.class));
-        navList.add(new btnNevigation("Measurements", ProgressActivity.class));
-        navList.add(new btnNevigation("Gallery", GalleryActivity.class));
-        navList.add(new btnNevigation("Add Baby", ActivityBabySign.class));
-        navList.add(new btnNevigation("Connect To Baby", ConnectToBabyActivity.class));
-        navList.add(new btnNevigation("Log Out", LoginActivity.class));
+        navList.add(new btnNavigation("Home",HomeActivity.class));
+        navList.add(new btnNavigation("Measurements", ProgressActivity.class));
+        navList.add(new btnNavigation("Gallery", GalleryActivity.class));
+        navList.add(new btnNavigation("Add Baby", ActivityBabySign.class));
+        navList.add(new btnNavigation("Connect To Baby", ConnectToBabyActivity.class));
+        navList.add(new btnNavigation("Log Out", LoginActivity.class));
         setRecyclerView2(navList);
     }
 
@@ -133,7 +131,7 @@ public class AllActivitiesActivity extends BaseActivity {
             }
         });
     }
-    protected void setRecyclerView2(btnNevigations navList) {
+    protected void setRecyclerView2(btnNavigations navList) {
         menuAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
             holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
         }, (holder, item, position) -> {

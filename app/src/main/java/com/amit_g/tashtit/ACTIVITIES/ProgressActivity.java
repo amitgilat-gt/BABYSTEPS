@@ -6,15 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,11 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.amit_g.dto.R1Request;
 import com.amit_g.dto.R1Response;
 import com.amit_g.helper.DateUtil;
-import com.amit_g.model.AllProgress;
 import com.amit_g.model.Baby;
 import com.amit_g.model.Progress;
-import com.amit_g.model.btnNevigation;
-import com.amit_g.model.btnNevigations;
+import com.amit_g.model.btnNavigation;
+import com.amit_g.model.btnNavigations;
 import com.amit_g.network.OpenRouterApi;
 import com.amit_g.network.RetrofitClient;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
@@ -104,17 +100,17 @@ public class ProgressActivity extends BaseActivity {
         rvMenuProgress = findViewById(R.id.rvMenuProgress);
         btnPercentileGenerator = findViewById(R.id.btnGeneratePercentile);
         tvPercentileResult = findViewById(R.id.tvPercentileResult);
-        btnNevigations navList = new btnNevigations();
-        navList.add(new btnNevigation("Home", HomeActivity.class));
-        navList.add(new btnNevigation("Gallery", GalleryActivity.class));
-        navList.add(new btnNevigation("Last Activities", AllActivitiesActivity.class));
-        navList.add(new btnNevigation("Add Baby", ActivityBabySign.class));
-        navList.add(new btnNevigation("Baby Connect", ConnectToBabyActivity.class));
-        navList.add(new btnNevigation("Log Out", LoginActivity.class));
+        btnNavigations navList = new btnNavigations();
+        navList.add(new btnNavigation("Home", HomeActivity.class));
+        navList.add(new btnNavigation("Gallery", GalleryActivity.class));
+        navList.add(new btnNavigation("Last Activities", AllActivitiesActivity.class));
+        navList.add(new btnNavigation("Add Baby", ActivityBabySign.class));
+        navList.add(new btnNavigation("Baby Connect", ConnectToBabyActivity.class));
+        navList.add(new btnNavigation("Log Out", LoginActivity.class));
         setRecyclerView2(navList);
     }
 
-    private void setRecyclerView2(btnNevigations navList) {
+    private void setRecyclerView2(btnNavigations navList) {
         nevAdapter = new NevigationAdapter(navList, R.layout.single_button_layout, holder -> {
             holder.putView("btnNev", holder.itemView.findViewById(R.id.btnNev));
         }, (holder, item, position) -> {

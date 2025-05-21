@@ -4,15 +4,15 @@ import com.amit_g.model.BASE.BaseEntity;
 
 import java.io.Serializable;
 
-public class btnNevigation extends BaseEntity implements Serializable {
+public class btnNavigation extends BaseEntity implements Serializable {
     private String label;
     private Class<?> targetActivity;
 
 
-    public btnNevigation() {
+    public btnNavigation() {
     }
 
-    public btnNevigation(String label, Class<?> targetActivity) {
+    public btnNavigation(String label, Class<?> targetActivity) {
         this.label = label;
         this.targetActivity = targetActivity;
     }
