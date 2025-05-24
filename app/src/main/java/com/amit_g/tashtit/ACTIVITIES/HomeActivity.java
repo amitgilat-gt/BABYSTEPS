@@ -62,6 +62,7 @@ public class HomeActivity extends BaseActivity {
     private TextView progressDate;
     private TextView progressWeight;
     private TextView progressHeight;
+    private String selectedBabyIdFs;
 
     // Called when the activity is created
     @Override
@@ -152,7 +153,7 @@ public class HomeActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position < babyList.size()) {
-                    String selectedBabyIdFs = babyList.get(position).getIdFs();
+                    selectedBabyIdFs = babyList.get(position).getIdFs();
                     sharedPreferences.edit().putString("selectedBabyIdFs", selectedBabyIdFs).apply();
                     fetchAndDisplayLatestActivity(selectedBabyIdFs);
                     fetchAndDisplayLatestProgress(selectedBabyIdFs);
@@ -161,7 +162,7 @@ public class HomeActivity extends BaseActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // No action needed
+
             }
         });
     }

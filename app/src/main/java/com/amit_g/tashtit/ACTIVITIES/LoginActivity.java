@@ -96,6 +96,7 @@ public class LoginActivity extends BaseActivity {
         editor.putString("userIdFs", user.getIdFs());
         editor.putString("username", user.getUserName());
         editor.putString("email", user.getEmail());
+        editor.remove("selectedBabyIdFs");
         editor.apply();
     }
 
