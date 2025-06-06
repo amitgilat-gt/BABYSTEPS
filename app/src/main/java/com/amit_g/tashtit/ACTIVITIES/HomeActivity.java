@@ -285,7 +285,6 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        setViewModel();
         String selectedBabyIdFs = sharedPreferences.getString("selectedBabyIdFs", null);
         if (selectedBabyIdFs != null) {
             observeLiveActivityData(selectedBabyIdFs);
