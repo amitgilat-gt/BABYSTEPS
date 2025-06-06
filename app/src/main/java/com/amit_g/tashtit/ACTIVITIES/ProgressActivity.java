@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -194,7 +195,7 @@ public class ProgressActivity extends BaseActivity {
         babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
 
         if (babyId != null) {
-            viewModel.getProgressForBabyId(babyId).observe(this, progresses -> {
+            viewModel.listenToProgressForBabyId(babyId).observe(this, progresses -> {
                 if (progresses != null && !progresses.isEmpty()) {
                     Collections.sort(progresses, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                     adapter.setItems(progresses);
