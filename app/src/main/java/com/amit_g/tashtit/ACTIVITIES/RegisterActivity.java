@@ -100,12 +100,16 @@ public class RegisterActivity extends BaseActivity implements EntryValidation {
     // Sets validation rules for user input fields
     @Override
     public void setValidation() {
+        Validator.clear();
+
         Validator.add(new TextRule(etUserName, RuleOperation.REQUIRED, "Username is required"));
         Validator.add(new NameRule(etUserName, RuleOperation.NAME, "Username is not valid"));
         Validator.add(new EmailRule(etEmail, RuleOperation.REQUIRED, "Email is required"));
         Validator.add(new EmailRule(etEmail, RuleOperation.TEXT, "Email is not valid"));
         Validator.add(new PasswordRule(etPassword, RuleOperation.REQUIRED, "Password is required"));
-        // Validator.add(new PasswordRule(etPassword, RuleOperation.PASSWORD, "Password is not valid")); // Optional
+        Validator.add(new PasswordRule(etPassword, RuleOperation.TEXT,
+                "Password must be 4–12 characters and include upper/lowercase letters, a digit, and a symbol"));
+
     }
 
     // Validates all input fields

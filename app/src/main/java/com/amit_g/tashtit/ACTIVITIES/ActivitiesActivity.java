@@ -21,6 +21,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.amit_g.helper.DateUtil;
+import com.amit_g.helper.inputValidators.EntryValidation;
+import com.amit_g.helper.inputValidators.Rule;
+import com.amit_g.helper.inputValidators.RuleOperation;
+import com.amit_g.helper.inputValidators.TextRule;
+import com.amit_g.helper.inputValidators.Validator;
 import com.amit_g.model.Action;
 import com.amit_g.model.LastActivity;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
@@ -34,7 +39,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class ActivitiesActivity extends BaseActivity {
+public class ActivitiesActivity extends BaseActivity implements EntryValidation {
 
     // UI components and model
     private EditText etNote;
@@ -62,6 +67,7 @@ public class ActivitiesActivity extends BaseActivity {
         activity = new LastActivity();
         initializeViews();
         setViewModel();
+        setValidation();
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         setListeners();
     }
@@ -131,20 +137,50 @@ public class ActivitiesActivity extends BaseActivity {
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Collects input data and saves the activity
+                if (!Validator.validate()) return;
+
+                String selectedTime = tvSelectedTime.getText().toString().trim();
+                int selectedActionPosition = actionSpinner.getSelectedItemPosition();
+
+                // Validate selected time
+                if (selectedTime.isEmpty() || selectedTime.equalsIgnoreCase("Select time")) {
+                    tvSelectedTime.setError("Time is required");
+                    tvSelectedTime.requestFocus();
+                    return;
+                }
+
+                // Validate selected activity (spinner)
+                if (selectedActionPosition == 0) {
+                    TextView errorText = (TextView) actionSpinner.getSelectedView();
+                    if (errorText != null) {
+                        errorText.setError("Select a valid activity");
+                        errorText.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
+                    }
+                    actionSpinner.requestFocus();
+                    return;
+                }
+
+                // All valid - proceed to save
                 activity.setDate(System.currentTimeMillis());
                 activity.setDetails(etNote.getText().toString());
                 activity.setAction(Action.valueOf(actionSpinner.getSelectedItem().toString()));
                 String babyId = sharedPreferences.getString("selectedBabyIdFs", null);
                 activity.setBabyId(babyId);
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getTime() == 0L) {
-                    LocalTime parsedTime = LocalTime.parse(tvSelectedTime.getText().toString(), DateTimeFormatter.ofPattern("HH:mm"));
+                    LocalTime parsedTime = LocalTime.parse(selectedTime, DateTimeFormatter.ofPattern("HH:mm"));
                     activity.setTime(DateUtil.localTimeToLong(parsedTime));
                 }
-                viewModel.save(activity);
+
+                if (btnAddNote.getText().equals("Update"))
+                    viewModel.update(activity);
+                else
+                    viewModel.add(activity);
+
                 new Handler().postDelayed(() -> finish(), 1500);
             }
         });
+
 
         btnCancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,4 +223,17 @@ public class ActivitiesActivity extends BaseActivity {
             actionSpinner.setSelection(0);
         }
     }
+
+
+    @Override
+    public void setValidation() {
+        Validator.clear();
+        Validator.add(new TextRule(etNote, RuleOperation.REQUIRED, "Note is required"));
+    }
+
+    @Override
+    public boolean validate() {
+        return Validator.validate();
+    }
+
 }

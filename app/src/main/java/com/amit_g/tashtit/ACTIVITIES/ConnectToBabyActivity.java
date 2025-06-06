@@ -14,6 +14,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.amit_g.helper.inputValidators.EntryValidation;
+import com.amit_g.helper.inputValidators.RuleOperation;
+import com.amit_g.helper.inputValidators.TextRule;
+import com.amit_g.helper.inputValidators.Validator;
 import com.amit_g.model.Baby;
 import com.amit_g.model.UserBaby;
 import com.amit_g.tashtit.ACTIVITIES.BASE.BaseActivity;
@@ -21,7 +25,7 @@ import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.BabiesViewModel;
 import com.amit_g.viewmodel.UserBabyViewModel;
 
-public class ConnectToBabyActivity extends BaseActivity {
+public class ConnectToBabyActivity extends BaseActivity implements EntryValidation {
 
     // UI elements and view models
     private EditText etIdFs;
@@ -66,6 +70,9 @@ public class ConnectToBabyActivity extends BaseActivity {
         btnConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!validate()) {
+                    return;
+                }
                 String id = etIdFs.getText().toString();
                 String password = etPasswordB.getText().toString();
 
@@ -104,4 +111,22 @@ public class ConnectToBabyActivity extends BaseActivity {
         babiesViewModel = new ViewModelProvider(this).get(BabiesViewModel.class);
         userBabyViewModel = new ViewModelProvider(this).get(UserBabyViewModel.class);
     }
+
+    @Override
+    public void setValidation() {
+        Validator.clear();
+
+        // Baby ID is required
+        Validator.add(new TextRule(etIdFs, RuleOperation.REQUIRED, "ID is required"));
+        Validator.add(new TextRule(etIdFs, RuleOperation.TEXT, "ID must be 9 digits", 9, 9, true));
+
+        // Baby password is required
+        Validator.add(new TextRule(etPasswordB, RuleOperation.REQUIRED, "Password is required"));
+    }
+
+    @Override
+    public boolean validate() {
+        return Validator.validate();
+    }
+
 }

@@ -125,10 +125,20 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
     // Sets validation rules for height, weight, and date
     @Override
     public void setValidation() {
+        Validator.clear();
+
         Validator.add(new TextRule(etHeight, RuleOperation.REQUIRED, "Height is required"));
         Validator.add(new TextRule(etWeight, RuleOperation.REQUIRED, "Weight is required"));
         Validator.add(new TextRule(etDate, RuleOperation.REQUIRED, "Date is required"));
+
+        // Add date validation: date must not be in the future (i.e., date <= today)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate today = LocalDate.now();
+            LocalDate earliest = today.minusYears(10); // optional: accept only 10 years back, or use null
+            Validator.add(new DateRule(etDate, RuleOperation.TEXT, "Date must be today or earlier", earliest, today));
+        }
     }
+
 
     // Triggers the validation check for all fields
     @Override

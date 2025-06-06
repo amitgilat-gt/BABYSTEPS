@@ -1,5 +1,6 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -146,10 +147,27 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
     @Override
     public void setValidation() {
         Validator.clear();
+
+        // Validate baby name
         Validator.add(new TextRule(etBabyName, RuleOperation.REQUIRED, "Baby's name is required"));
         Validator.add(new NameRule(etBabyName, RuleOperation.NAME, "Baby's name is not valid"));
+
+        // Validate birthdate presence
         Validator.add(new TextRule(etBirthDate, RuleOperation.REQUIRED, "Birthdate is required"));
+
+        // Validate age: must be less than 6 years
+        @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate today = LocalDate.now();
+        @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate sixYearsAgo = today.minusYears(6);
+
+        Validator.add(new DateRule(etBirthDate, RuleOperation.TEXT, "Baby must be younger than 6 years",
+                sixYearsAgo, today));
+
+        // Validate baby ID
+        Validator.add(new TextRule(etId, RuleOperation.REQUIRED, "ID is required"));
+        Validator.add(new TextRule(etId, RuleOperation.TEXT, "ID must be 9 digits", 9, 9, true));
     }
+
+
 
     // Validates all fields based on rules defined
     @Override

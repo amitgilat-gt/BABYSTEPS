@@ -6,10 +6,11 @@ public class PasswordRule extends TextRule{
     public PasswordRule(View view, RuleOperation operation, String message) {
         super(view, operation, message);
 
-        regularExpression = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[a-zA-Z\\d!@#$%^&*()_+]{4,8}$";
+        regularExpression = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+])[a-zA-Z\\d!@#$%^&*()_+]{4,12}$";
         minimumLength = 4;
-        maximumLength = 8;
+        maximumLength = 12;
     }
+
 
     public PasswordRule(View view, RuleOperation operation, String message, int minimumLength, int maximumLength) {
         this(view, operation, message, minimumLength, maximumLength, null);
