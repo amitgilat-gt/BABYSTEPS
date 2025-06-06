@@ -48,4 +48,11 @@ public class ProgressViewModel extends BaseViewModel<Progress, AllProgress> {
         return liveData;
     }
 
+    public LiveData<AllProgress> listenToProgressForBabyId(String babyId) {
+        return repository.getAll(null, null, repository.getQueryForBabyId(babyId));
+    }
+
+
+
+
 }

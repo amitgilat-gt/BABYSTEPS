@@ -46,4 +46,10 @@ public class ActivityViewModel extends BaseViewModel {
                 .addOnFailureListener(e -> liveData.setValue(null));
         return liveData;
     }
+
+    public LiveData<LastActivities> listenToActivitiesForBabyId(String babyId) {
+        return repository.getAll(null, null, repository.getActivitiesForBabyId(babyId));
+    }
+
+
 }

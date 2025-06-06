@@ -43,4 +43,8 @@ public class GalleryViewModel extends BaseViewModel<Gallery, Galleries> {
                 .addOnFailureListener(e -> liveData.setValue(null));
         return liveData;
     }
+    public LiveData<Galleries> listenToPicturesForBabyId(String babyId) {
+        return repository.listenToPicturesForBabyId(babyId);
+    }
+
 }

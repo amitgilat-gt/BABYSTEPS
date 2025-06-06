@@ -169,7 +169,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LocalDate today = LocalDate.now();
             LocalDate earliest = today.minusYears(10); // optional: accept only 10 years back, or use null
-            Validator.add(new DateRule(etDate, RuleOperation.TEXT, "Date must be today or earlier", earliest, today));
+            Validator.add(new DateRule(etDate, RuleOperation.DATE, "Date must be today or earlier", earliest, today));
         }
     }
 

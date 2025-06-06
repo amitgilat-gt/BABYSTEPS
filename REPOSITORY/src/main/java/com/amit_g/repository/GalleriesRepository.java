@@ -2,6 +2,8 @@ package com.amit_g.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.amit_g.model.Galleries;
 import com.amit_g.model.Gallery;
 import com.amit_g.model.User;
@@ -23,4 +25,8 @@ public class GalleriesRepository extends BaseRepository<Gallery, Galleries> {
     public Query getPicturesForBabyId(String babyId) {
         return getCollection().whereEqualTo("babyId",babyId);
     }
+    public LiveData<Galleries> listenToPicturesForBabyId(String babyId) {
+        return getAll(null, null, getPicturesForBabyId(babyId));
+    }
+
 }

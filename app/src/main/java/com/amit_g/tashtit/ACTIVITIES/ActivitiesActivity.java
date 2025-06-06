@@ -108,7 +108,6 @@ public class ActivitiesActivity extends BaseActivity implements EntryValidation 
         btnSelectTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Opens TimePicker dialog and saves selected time to model
                 final Calendar calendar = Calendar.getInstance();
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(Calendar.MINUTE);
@@ -116,13 +115,19 @@ public class ActivitiesActivity extends BaseActivity implements EntryValidation 
                 TimePickerDialog timePickerDialog = new TimePickerDialog(
                         ActivitiesActivity.this,
                         (view, selectedHour, selectedMinute) -> {
-                            String time = String.format(Locale.getDefault(), "%02d:%02d", selectedHour, selectedMinute);
-                            tvSelectedTime.setText(time);
-
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                // Convert to LocalTime
                                 LocalTime selectedTime = LocalTime.of(selectedHour, selectedMinute);
-                                tvSelectedTime.setText(DateUtil.localTimeToString(selectedTime));
+
+                                // Format as HH:mm and display
+                                String formattedTime = DateUtil.localTimeToString(selectedTime);
+                                tvSelectedTime.setText(formattedTime);
+
+                                // Save to model
                                 activity.setTime(DateUtil.localTimeToLong(selectedTime));
+
+                                // Clear any previous error
+                                tvSelectedTime.setError(null);
                             }
                         },
                         hour,
@@ -134,6 +139,7 @@ public class ActivitiesActivity extends BaseActivity implements EntryValidation 
             }
         });
 
+
         btnAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,7 +149,7 @@ public class ActivitiesActivity extends BaseActivity implements EntryValidation 
                 int selectedActionPosition = actionSpinner.getSelectedItemPosition();
 
                 // Validate selected time
-                if (selectedTime.isEmpty() || selectedTime.equalsIgnoreCase("Select time")) {
+                if (selectedTime.isEmpty() || selectedTime.equalsIgnoreCase("Select time") || selectedTime.equalsIgnoreCase("No time selected")) {
                     tvSelectedTime.setError("Time is required");
                     tvSelectedTime.requestFocus();
                     return;
@@ -168,8 +174,15 @@ public class ActivitiesActivity extends BaseActivity implements EntryValidation 
                 activity.setBabyId(babyId);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && activity.getTime() == 0L) {
-                    LocalTime parsedTime = LocalTime.parse(selectedTime, DateTimeFormatter.ofPattern("HH:mm"));
-                    activity.setTime(DateUtil.localTimeToLong(parsedTime));
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+                        LocalTime parsedTime = LocalTime.parse(selectedTime, formatter);
+                        activity.setTime(DateUtil.localTimeToLong(parsedTime));
+                    } catch (Exception e) {
+                        tvSelectedTime.setError("Invalid time format");
+                        tvSelectedTime.requestFocus();
+                        return;
+                    }
                 }
 
                 if (btnAddNote.getText().equals("Update"))
@@ -180,6 +193,7 @@ public class ActivitiesActivity extends BaseActivity implements EntryValidation 
                 new Handler().postDelayed(() -> finish(), 1500);
             }
         });
+
 
 
         btnCancelNote.setOnClickListener(new View.OnClickListener() {

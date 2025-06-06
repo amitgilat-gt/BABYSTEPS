@@ -155,8 +155,8 @@ public class HomeActivity extends BaseActivity {
                 if (position < babyList.size()) {
                     selectedBabyIdFs = babyList.get(position).getIdFs();
                     sharedPreferences.edit().putString("selectedBabyIdFs", selectedBabyIdFs).apply();
-                    fetchAndDisplayLatestActivity(selectedBabyIdFs);
-                    fetchAndDisplayLatestProgress(selectedBabyIdFs);
+                    observeLiveActivityData(selectedBabyIdFs);
+                    observeLiveProgressData(selectedBabyIdFs);
                 }
             }
 
@@ -167,18 +167,6 @@ public class HomeActivity extends BaseActivity {
         });
     }
 
-    // Loads latest activity data and displays on screen
-    private void fetchAndDisplayLatestActivity(String babyIdFs) {
-        activityViewModel.getActivitiesForBabyId(babyIdFs).observe(this, activities -> {
-            if (activities != null && !activities.isEmpty()) {
-                Collections.sort(activities, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
-                LastActivity latest = activities.get(0);
-                updateActivityUI(latest);
-            } else {
-                updateActivityUI(null);
-            }
-        });
-    }
 
     // Initializes view models and fetches user/baby data
     @Override
@@ -202,15 +190,17 @@ public class HomeActivity extends BaseActivity {
                         for (int i = 0; i < babyList.size(); i++) {
                             if (savedBabyId.equals(babyList.get(i).getIdFs())) {
                                 spBaby.setSelection(i);
-                                fetchAndDisplayLatestActivity(savedBabyId);
-                                fetchAndDisplayLatestProgress(savedBabyId);
+                                observeLiveActivityData(selectedBabyIdFs);
+                                observeLiveProgressData(selectedBabyIdFs);
+
                                 break;
                             }
                         }
                     } else if (!babyList.isEmpty()) {
                         String defaultBabyId = babyList.get(0).getIdFs();
-                        fetchAndDisplayLatestActivity(defaultBabyId);
-                        fetchAndDisplayLatestProgress(defaultBabyId);
+                        observeLiveActivityData(selectedBabyIdFs);
+                        observeLiveProgressData(selectedBabyIdFs);
+
                     }
                 } else {
                     updateSpinnerWithNoData();
@@ -225,18 +215,28 @@ public class HomeActivity extends BaseActivity {
         }
     }
 
-    // Loads and displays the latest progress measurement for the selected baby
-    private void fetchAndDisplayLatestProgress(String babyIdFs) {
-        progressViewModel.getProgressForBabyId(babyIdFs).observe(this, progressList -> {
+    private void observeLiveActivityData(String babyIdFs) {
+        activityViewModel.listenToActivitiesForBabyId(babyIdFs).observe(this, activities -> {
+            if (activities != null && !activities.isEmpty()) {
+                Collections.sort(activities, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
+                updateActivityUI(activities.get(0));
+            } else {
+                updateActivityUI(null);
+            }
+        });
+    }
+
+    private void observeLiveProgressData(String babyIdFs) {
+        progressViewModel.listenToProgressForBabyId(babyIdFs).observe(this, progressList -> {
             if (progressList != null && !progressList.isEmpty()) {
                 Collections.sort(progressList, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
-                Progress latestProgress = progressList.get(0);
-                updateProgressUI(latestProgress);
+                updateProgressUI(progressList.get(0));
             } else {
                 updateProgressUI(null);
             }
         });
     }
+
 
     // Updates the progress section UI
     private void updateProgressUI(Progress progress) {
@@ -288,8 +288,8 @@ public class HomeActivity extends BaseActivity {
         setViewModel();
         String selectedBabyIdFs = sharedPreferences.getString("selectedBabyIdFs", null);
         if (selectedBabyIdFs != null) {
-            fetchAndDisplayLatestActivity(selectedBabyIdFs);
-            fetchAndDisplayLatestProgress(selectedBabyIdFs);
+            observeLiveActivityData(selectedBabyIdFs);
+            observeLiveProgressData(selectedBabyIdFs);
         }
     }
 

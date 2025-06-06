@@ -2,10 +2,12 @@ package com.amit_g.tashtit.ACTIVITIES;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -28,6 +30,7 @@ import com.amit_g.tashtit.R;
 import com.amit_g.viewmodel.ActivityViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
 
@@ -115,11 +118,24 @@ public class AllActivitiesActivity extends BaseActivity {
         adapter.setOnItemClickListener(new GenericAdapter.OnItemClickListener<LastActivity>() {
             @Override
             public void onItemClick(LastActivity item, int position) {
+                // Check if the activity date is today
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    LocalDate activityDate = DateUtil.longToLocalDate(item.getDate());
+                    LocalDate today = LocalDate.now();
+
+                    if (!activityDate.equals(today)) {
+                        Toast.makeText(AllActivitiesActivity.this, "You can only edit today's activity.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+
+                // Proceed to open the activity for editing
                 Intent intent = new Intent(AllActivitiesActivity.this, ActivitiesActivity.class);
                 intent.putExtra("activity", item);
                 startActivity(intent);
             }
         });
+
 
         adapter.setOnItemLongClickListener(new GenericAdapter.OnItemLongClickListener<LastActivity>() {
             @Override
@@ -179,7 +195,7 @@ public class AllActivitiesActivity extends BaseActivity {
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(ActivityViewModel.class);
         babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
-        viewModel.getActivitiesForBabyId(babyId).observe(this, activities -> {
+        viewModel.listenToActivitiesForBabyId(babyId).observe(this, activities -> {
             if (activities != null && !activities.isEmpty()) {
                 Collections.sort(activities, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
                 adapter.setItems(activities);

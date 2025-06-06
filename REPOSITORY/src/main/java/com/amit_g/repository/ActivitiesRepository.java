@@ -2,6 +2,8 @@ package com.amit_g.repository;
 
 import android.app.Application;
 
+import androidx.lifecycle.LiveData;
+
 import com.amit_g.model.LastActivities;
 import com.amit_g.model.LastActivity;
 import com.amit_g.repository.BASE.BaseRepository;
@@ -19,5 +21,9 @@ public class ActivitiesRepository extends BaseRepository<LastActivity, LastActiv
     public Query getActivitiesForBabyId(String babyId) {
         return getCollection().whereEqualTo("babyId", babyId);
     }
+    public LiveData<LastActivities> listenToActivitiesForBabyId(String babyId) {
+        return getAll(null, null, getActivitiesForBabyId(babyId));
+    }
+
 
 }

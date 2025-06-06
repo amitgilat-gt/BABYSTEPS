@@ -23,6 +23,7 @@ import com.amit_g.helper.AlertUtil;
 import com.amit_g.helper.BitMapHelper;
 import com.amit_g.helper.DateUtil;
 import com.amit_g.helper.Global;
+import com.amit_g.model.Galleries;
 import com.amit_g.model.Gallery;
 import com.amit_g.model.btnNavigation;
 import com.amit_g.model.btnNavigations;
@@ -173,12 +174,15 @@ public class GalleryActivity extends BaseActivity {
     protected void setViewModel() {
         viewModel = new ViewModelProvider(this).get(GalleryViewModel.class);
         babyId = getSharedPreferences("UserPrefs", MODE_PRIVATE).getString("selectedBabyIdFs", null);
-        viewModel.getPicturesForBabyId(babyId).observe(this, new Observer<List<Gallery>>() {
+
+        viewModel.listenToPicturesForBabyId(babyId).observe(this, new Observer<Galleries>() {
             @Override
-            public void onChanged(List<Gallery> galleries) {
-                Collections.sort(galleries, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
-                adapter.setItems(galleries);
-                adapter.notifyDataSetChanged();
+            public void onChanged(Galleries galleries) {
+                if (galleries != null && !galleries.isEmpty()) {
+                    Collections.sort(galleries, (p1, p2) -> Long.compare(p2.getDate(), p1.getDate()));
+                    adapter.setItems(galleries);
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
     }
