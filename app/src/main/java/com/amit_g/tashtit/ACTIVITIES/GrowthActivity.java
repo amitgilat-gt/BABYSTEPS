@@ -1,5 +1,6 @@
 package com.amit_g.tashtit.ACTIVITIES;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -40,6 +42,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
     private ProgressViewModel viewModel;
     private SharedPreferences sharedPreferences;
     private Progress progress;
+    private ImageButton imgSelectDate;
 
     // Called when the activity is created
     @Override
@@ -62,6 +65,7 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
         etDate = findViewById(R.id.etDate);
         btnPut = findViewById(R.id.btnPut);
         btnCancelSt = findViewById(R.id.btnCancelSt);
+        imgSelectDate = findViewById(R.id.imgSelectDate);
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
 
         // Set today's date by default
@@ -86,6 +90,12 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
     // Sets listeners for save and cancel buttons
     @Override
     protected void setListeners() {
+        imgSelectDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDatePickerDialog(etDate);
+            }
+        });
         btnPut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,6 +124,30 @@ public class GrowthActivity extends BaseActivity implements EntryValidation {
                 finish();
             }
         });
+    }
+
+    private void showDatePickerDialog(EditText etDate) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            LocalDate today = LocalDate.now();
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(
+                    GrowthActivity.this,
+                    (view, year, month, dayOfMonth) -> {
+                        // Format the selected date and set it to the EditText
+                        LocalDate selectedDate = LocalDate.of(year, month + 1, dayOfMonth);
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        etDate.setText(selectedDate.format(formatter));
+                    },
+                    today.getYear(),
+                    today.getMonthValue() - 1,
+                    today.getDayOfMonth()
+            );
+
+            // Optional: restrict max date to today
+            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+            datePickerDialog.show();
+        }
     }
 
     // Initializes the view model for handling growth entries

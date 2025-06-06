@@ -77,22 +77,47 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Date Field -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilDate"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+            <!-- Date Field with Calendar Button -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:hint="Date">
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDate"
-                    android:layout_width="match_parent"
+                <!-- Date input field -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDate"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:inputType="date" />
+                    android:layout_weight="1"
+                    android:hint="Date">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:inputType="date" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Small calendar icon button -->
+                <ImageButton
+                    android:id="@+id/imgSelectDate"
+                    android:layout_width="41dp"
+                    android:layout_height="45dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Select Date"
+                    android:padding="4dp"
+                    android:scaleType="fitXY"
+                    app:srcCompat="@drawable/calendar" />
+            </LinearLayout>
+
+
 
             <!-- Add Button -->
             <com.google.android.material.button.MaterialButton
