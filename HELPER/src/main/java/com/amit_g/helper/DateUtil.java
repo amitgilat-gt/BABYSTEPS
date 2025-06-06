@@ -232,4 +232,11 @@ public class DateUtil {
 
         return Math.max(totalMonths, 0);
     }
+    @SuppressLint("NewApi")
+    public static DateTimeFormatter getFormatter() {
+        return DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    }
+
+
+
 }

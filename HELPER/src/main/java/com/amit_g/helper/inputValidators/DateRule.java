@@ -1,5 +1,6 @@
 package com.amit_g.helper.inputValidators;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.EditText;
 
@@ -26,20 +27,38 @@ public class DateRule extends Rule{
         return upBound;
     }
 
-    public static boolean validate(DateRule rule){
-        if (Validator.requiredValidator(rule)){
-            LocalDate dateToCheck = DateUtil.stringToLocalDate(((EditText)rule.view).getText().toString());
-            if (dateToCheck != null) {
-                rule.isValid = DateUtil.inRange(dateToCheck, lowBound, upBound);
-            }
-            else {
+    @SuppressLint("NewApi")
+    public static boolean validate(DateRule rule) {
+        if (Validator.requiredValidator(rule)) {
+            String input = ((EditText) rule.view).getText().toString();
+            LocalDate dateToCheck = DateUtil.stringToLocalDate(input);
+
+            if (dateToCheck == null) {
                 rule.isValid = false;
+                rule.setMessage("Invalid date format (use dd/MM/yyyy)");
+                return false;
             }
-        }
-        else {
+
+            // Check bounds if set
+            if (rule.lowBound != null && dateToCheck.isBefore(rule.lowBound)) {
+                rule.isValid = false;
+                rule.setMessage("Date must not be before " + rule.lowBound.format(DateUtil.getFormatter()));
+                return false;
+            }
+
+            if (rule.upBound != null && dateToCheck.isAfter(rule.upBound)) {
+                rule.isValid = false;
+                rule.setMessage("Date must not be after " + rule.upBound.format(DateUtil.getFormatter()));
+                return false;
+            }
+
+            rule.isValid = true;
+        } else {
             rule.isValid = false;
         }
 
         return rule.isValid;
     }
+
+
 }
