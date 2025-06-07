@@ -31,23 +31,6 @@ public class ProgressViewModel extends BaseViewModel<Progress, AllProgress> {
         return repository;
     }
 
-    public LiveData<List<Progress>> getProgressForBabyId(String babyId) {
-        MutableLiveData<List<Progress>> liveData = new MutableLiveData<>();
-        repository.getQueryForBabyId(babyId).get()
-                .addOnSuccessListener(querySnapshot -> {
-                    List<Progress> progressList = new ArrayList<>();
-                    for (DocumentSnapshot doc : querySnapshot) {
-                        Progress progress = doc.toObject(Progress.class);
-                        if (progress != null) {
-                            progressList.add(progress);
-                        }
-                    }
-                    liveData.setValue(progressList);
-                })
-                .addOnFailureListener(e -> liveData.setValue(null));
-        return liveData;
-    }
-
     public LiveData<AllProgress> listenToProgressForBabyId(String babyId) {
         return repository.getAll(null, null, repository.getQueryForBabyId(babyId));
     }
