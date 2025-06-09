@@ -12,7 +12,20 @@
           "package_name": "com.amit_g.tashtit"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "197512081081-mv7ofd79ds5hhon68pd3e7f9t920grdb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.amit_g.tashtit",
+            "certificate_hash": "4c484cd79b9c9c1fcf576ce7c3c4409df956ec57"
+          }
+        },
+        {
+          "client_id": "197512081081-pgpf7rich95fvk5lm38qh60stregm0ac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAJePWqMxZGDk3AY8I_hWluw4gG0EqWeRo"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "197512081081-pgpf7rich95fvk5lm38qh60stregm0ac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

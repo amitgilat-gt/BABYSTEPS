@@ -8,6 +8,7 @@ import com.amit_g.repository.BASE.BaseRepository;
 import com.amit_g.repository.UsersRepository;
 import com.amit_g.viewmodel.BASE.BaseViewModel;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class UsersViewModel extends BaseViewModel<User, Users> {
@@ -24,6 +25,12 @@ public class UsersViewModel extends BaseViewModel<User, Users> {
     }
     public Task<QuerySnapshot> loginUser(String username, String password) {
         return repository.loginUser(username, password);
+    }
+    public Task<QuerySnapshot> getUserById(String Idfs) {
+        return repository.getUserById(Idfs);
+    }
+    public Task<User> getUserByDocumentId(String idFs) {
+        return repository.get(idFs);  // This returns Task<User>
     }
 
 
