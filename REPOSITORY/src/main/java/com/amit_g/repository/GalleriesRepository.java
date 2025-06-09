@@ -28,5 +28,4 @@ public class GalleriesRepository extends BaseRepository<Gallery, Galleries> {
     public LiveData<Galleries> listenToPicturesForBabyId(String babyId) {
         return getAll(null, null, getPicturesForBabyId(babyId));
     }
-
 }
