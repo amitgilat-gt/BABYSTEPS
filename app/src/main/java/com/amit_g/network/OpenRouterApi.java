@@ -15,7 +15,7 @@ public interface OpenRouterApi {
     // Sends a POST request to the OpenRouter API's chat completion endpoint
     // Includes authorization and content-type headers
     @Headers({
-            "Authorization: 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",
+            "Authorization: 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",
             "Content-Type: application/json"
     })
     @POST("v1/chat/completions")
