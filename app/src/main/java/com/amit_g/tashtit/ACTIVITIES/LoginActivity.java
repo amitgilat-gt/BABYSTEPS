@@ -115,7 +115,7 @@ public class LoginActivity extends BaseActivity {
         btnGoogleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mGoogleSignInClient.signOut().addOnCompleteListener(task -> {
+                mGoogleSignInClient.signOut().addOnCompleteListener(task -> {//clean google account
                     Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                     startActivityForResult(signInIntent, RC_SIGN_IN);
                 });
@@ -165,7 +165,7 @@ public class LoginActivity extends BaseActivity {
                         if (firebaseUser != null) {
                             String uid = firebaseUser.getUid();
 
-                            // First, try to retrieve the user from your Firestore based on their Firebase UID
+                            // try to retrieve the user from your Firestore based on their Firebase UID
                             viewModel.getUserByDocumentId(uid).addOnSuccessListener(existingUser -> {
                                 User userToSave; // Declare a User object that will hold the correct user data
 
