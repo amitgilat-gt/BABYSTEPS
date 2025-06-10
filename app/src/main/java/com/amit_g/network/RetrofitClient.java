@@ -12,8 +12,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 // Singleton Retrofit client used to send requests to the OpenRouter API
 public class RetrofitClient {
 
-    private static final String BASE_URL = "https://openrouter.ai/api/"; // Base URL for the OpenRouter API
-    private static final String API_KEY = "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"; // WARNING: hardcoded key — move to secure config
+    private static final String BASE_URL = "https://openrouter.ai/api/";
+    private static final String API_KEY = "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";
     private static Retrofit retrofit;
 
     // Returns a singleton Retrofit instance configured with an authorization interceptor
