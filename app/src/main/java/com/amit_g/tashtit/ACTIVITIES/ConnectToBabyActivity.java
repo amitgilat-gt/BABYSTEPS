@@ -99,7 +99,6 @@ public class ConnectToBabyActivity extends BaseActivity implements EntryValidati
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Cancels the connection and closes the activity
                 finish();
             }
         });
