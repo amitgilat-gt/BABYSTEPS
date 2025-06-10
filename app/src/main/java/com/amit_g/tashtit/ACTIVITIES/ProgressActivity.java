@@ -261,7 +261,7 @@ public class ProgressActivity extends BaseActivity {
                     }
 
                     String modelReply = r1Response.getChoices().get(0).getMessage().getContent();
-                    modelReply = modelReply.replaceAll("(?s)```(?:json)?\\s*", "").replaceAll("```", "").trim();
+                    modelReply = modelReply.replaceAll("(?s)```(?:json)?\\s*", "").replaceAll("```", "").trim();//מוריד את מה שלא נחוץ בתשובה
 
                     try {
                         JSONObject json = new JSONObject(modelReply);
