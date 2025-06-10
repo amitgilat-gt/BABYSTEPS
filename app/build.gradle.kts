@@ -43,6 +43,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.firebase:firebase-auth:22.3.0")
     implementation("com.google.android.gms:play-services-auth:21.0.0")
     implementation(project(":VIEWMODEL"))
