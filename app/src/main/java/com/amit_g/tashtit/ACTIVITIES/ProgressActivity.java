@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
@@ -163,6 +164,7 @@ public class ProgressActivity extends BaseActivity {
                         .show();
             } else {
                 Log.e("Percentile", "No progress data available.");
+                Toast.makeText(this, "No progress data available.", Toast.LENGTH_SHORT).show();
             }
         });
 
