@@ -52,6 +52,7 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
     private SharedPreferences sharedPreferences;
     private String userId;
     private EditText etId;
+    private Button btnCancel;
 
     // Called when the activity is created
     @Override
@@ -94,6 +95,7 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
         sharedPreferences = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("userIdFs", null);
         spGender = findViewById(R.id.spGender);
+        btnCancel = findViewById(R.id.btnCancel);
         setListeners();
     }
 
@@ -134,6 +136,12 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
                 }
             }
         });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     // Initializes view models
@@ -159,7 +167,7 @@ public class ActivityBabySign extends BaseActivity implements EntryValidation {
         @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate today = LocalDate.now();
         @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate sixYearsAgo = today.minusYears(6);
 
-        Validator.add(new DateRule(etBirthDate, RuleOperation.TEXT, "Baby must be younger than 6 years",
+        Validator.add(new DateRule(etBirthDate, RuleOperation.DATE, "Baby must be younger than 6 years",
                 sixYearsAgo, today));
 
         // Validate baby ID

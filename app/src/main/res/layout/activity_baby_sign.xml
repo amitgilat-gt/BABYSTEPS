@@ -121,17 +121,42 @@
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Submit Button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSignUp"
+            <!-- Button Container -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Register Baby"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                app:cornerRadius="8dp"
-                app:backgroundTint="#5C6BC0"/>
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <!-- Cancel Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCancel"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    android:text="Cancel"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="#5C6BC0"
+                    android:textColor="#5C6BC0"/>
+
+                <!-- Submit Button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSignUp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:text="Register Baby"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    app:cornerRadius="8dp"
+                    app:backgroundTint="#5C6BC0"/>
+            </LinearLayout>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
