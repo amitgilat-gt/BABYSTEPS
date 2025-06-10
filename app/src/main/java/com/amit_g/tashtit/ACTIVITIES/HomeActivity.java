@@ -287,8 +287,7 @@ public class HomeActivity extends BaseActivity {
         super.onResume();
         String selectedBabyIdFs = sharedPreferences.getString("selectedBabyIdFs", null);
         if (selectedBabyIdFs != null) {
-            observeLiveActivityData(selectedBabyIdFs);
-            observeLiveProgressData(selectedBabyIdFs);
+            setViewModel();
         }
     }
 
