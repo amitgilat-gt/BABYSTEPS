@@ -97,11 +97,11 @@ public class ProgressActivity extends BaseActivity {
     // Initializes views and navigation buttons
     @Override
     protected void initializeViews() {
-        rvProgress = findViewById(R.id.rvProgress);
-        fabAddProgress = findViewById(R.id.fabAddProgress);
-        rvMenuProgress = findViewById(R.id.rvMenuProgress);
+        rvProgress             = findViewById(R.id.rvProgress);
+        fabAddProgress         = findViewById(R.id.fabAddProgress);
+        rvMenuProgress         = findViewById(R.id.rvMenuProgress);
         btnPercentileGenerator = findViewById(R.id.btnGeneratePercentile);
-        tvPercentileResult = findViewById(R.id.tvPercentileResult);
+        tvPercentileResult     = findViewById(R.id.tvPercentileResult);
         btnNavigations navList = new btnNavigations();
         navList.add(new btnNavigation("Home", HomeActivity.class));
         navList.add(new btnNavigation("Gallery", GalleryActivity.class));
